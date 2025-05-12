@@ -1,50 +1,57 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat</title>
-  </head>
-  <body>
-    <div class="container">
-      <div class="row my-5">
-        <div class="display-3 text-center">Poker Client</div>
-      </div>
-      <div class="row" id="login-cont">
-        <div class="col-auto">
-          <input type="text" id="name" class="form-control  d-inline-block" placeholder="Name">
-        </div>
-        <div class="col-auto">
-          <button type="button" class="btn btn-primary col-auto d-inline-block" id="login">Login</button>
-        </div>
-      </div>
-      <div class="row d-none" id="logout-cont">
-        <div class="col-auto">
-          <button type="button" class="btn btn-warning col-auto d-inline-block" id="logout">Logout</button>
-        </div>
-      </div>
-      <div class="row">
 
-      <div class="row w-100 border border-2 rounded my-2 d-none" id="table">
-        <div class="col-12 pt-2" id="table-count"></div>
-        <div class="col-12 pt-2" id="stream">
-          
-        </div>
-        <div class="col-12 p-1 border-top align-self-end" style="height: fit-content;">
-          
-          <div class="row w-100 align-items-center">
-            <div class="col-11 p-0">
-              <input type="text" id="message" class="form-control d-inline-block" placeholder="Message">
-            </div>
-            <div class="col-1 p-0">
-              <button type="submit" class="btn btn-primary d-inline-block" id="send">Send</button>
-            </div>
-          </div>  
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat</title>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Poker Client</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+        </ul>
+        <form class="d-flex">
+          <input type="text" id="name" class="form-control me-2 d-inline-block" placeholder="Name">
+          <button type="button" class="btn btn-primary col-auto d-inline-block" id="login">Login</button>
+          <button type="button" class="btn btn-warning col-auto d-none ms-2 d-inline-block" id="logout">Logout</button>
+        </form>
       </div>
     </div>
+  </nav>
+
+  <div class="container">
+    <!-- <div class="row my-5">
+      <div class="display-3 text-center">Poker Client</div>
+    </div> -->
+
+    <div class="row w-100 my-2 d-none" id="table">
+      <div class="col-12 pt-2" id="table-count">tbl</div>
+      <div class="col-12 pt-2" id="stream">
+        str
+      </div>
+
     </div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>
