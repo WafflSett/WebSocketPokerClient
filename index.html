@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row my-5">
+        <div class="display-3 text-center">Poker Client</div>
+      </div>
+      <div class="row" id="login-cont">
+        <div class="col-auto">
+          <input type="text" id="name" class="form-control  d-inline-block" placeholder="Name">
+        </div>
+        <div class="col-auto">
+          <button type="button" class="btn btn-primary col-auto d-inline-block" id="login">Login</button>
+        </div>
+      </div>
+      <div class="row d-none" id="logout-cont">
+        <div class="col-auto">
+          <button type="button" class="btn btn-warning col-auto d-inline-block" id="logout">Logout</button>
+        </div>
+      </div>
+      <div class="row">
+
+      <div class="row w-100 border border-2 rounded my-2 d-none" id="table">
+        <div class="col-12 pt-2" id="table-count"></div>
+        <div class="col-12 pt-2" id="stream">
+          
+        </div>
+        <div class="col-12 p-1 border-top align-self-end" style="height: fit-content;">
+          
+          <div class="row w-100 align-items-center">
+            <div class="col-11 p-0">
+              <input type="text" id="message" class="form-control d-inline-block" placeholder="Message">
+            </div>
+            <div class="col-1 p-0">
+              <button type="submit" class="btn btn-primary d-inline-block" id="send">Send</button>
+            </div>
+          </div>  
+        </div>
+      </div>
+    </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

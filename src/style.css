@@ -1,0 +1,10 @@
+
+#stream {
+    height: 65vh;
+    overflow-y: scroll;
+}
+
+#stream2{
+    height: 60vh;
+    overflow-y: scroll;
+}
