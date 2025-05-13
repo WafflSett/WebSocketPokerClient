@@ -3,7 +3,7 @@ export default interface IMessageProtocol{
     userId: number,
     userName?: string,
     text?: string,
-    userList? : {userId:number, userName:string}[],
+    userList? : {userId:number, userName:string, position: number}[],
     tableId?: number,
     position?:number,
     dealer?:number

@@ -6,7 +6,7 @@ let ws : WebSocket;
 let userId : number;
 let userName : string;
 let stream = document.querySelector('#stream');
-let users : {userId:number, userName:string}[] = [];
+// let users : {userId:number, userName:string}[] = [];
 let tableId : number;
 let position : number;
 
@@ -33,42 +33,43 @@ const connect = ()=>{
       userId = msg.userId;
       tableId = msg.tableId!;
       position = msg.position!;
-      stream!.innerHTML+='<div class="alert mb-1 p-1 alert-secondary">User '+userId+' (You) has joined!</div>';
+      stream!.innerHTML+=`<div class="alert mb-1 p-1 alert-secondary">User ${userId} (You) has joined, @ position ${position}!</div>`;
+      let usersGroupList = (document.querySelector('#users') as HTMLDivElement);
+      msg.userList!.forEach(x=>{
+        usersGroupList.innerHTML += `<li class="list-group-item">${x.userName} ${(x.userId==userId?'(You)':'')} @ pos. ${x.position}</li>`
+      })
       return;
     }
     if (msg.type == 'join') {
       if (userId! != msg.userId) {
-        stream!.innerHTML+='<div class="alert mb-1 p-1 alert-secondary">'+msg.userName+' (User '+msg.userId+') has joined!</div>';
+        stream!.innerHTML+=`<div class="alert mb-1 p-1 alert-secondary">${msg.userName} (User ${msg.userId}) has joined, @ position ${msg.position}!</div>`;
+        (document.querySelector('#users') as HTMLDivElement).innerHTML += `<li class="list-group-item">${msg.userName} @ pos. ${msg.position}</li>`
+      }else{
+        (document.querySelector('#table-count') as HTMLDivElement).innerHTML += `<div class="display-4">Welcome to Table ${msg.tableId}</div>`;
       }
       return;
     }
-    if (msg.type == 'text') {
-      stream!.innerHTML+='<div class="alert mb-1 p-1 alert-'+(msg.userId==userId!?"primary":"info")+'">'+msg.userName+': '+msg.text+'</div>'
-      return;
-    }
-    if (msg.type == 'disced') {
+    if (msg.type == 'disc') {
       stream!.innerHTML+='<div class="alert mb-1 p-1 alert-secondary">'+msg.userName+' (User '+msg.userId+') has disconnected!</div>'
       return;
     }
-    if (msg.type == 'userlist') {
-      // console.log(msg.userList);
-      users = msg.userList!;
-      console.log(users);
-      const select = document.querySelector('#userSelect') as HTMLSelectElement;
-      users.forEach(u=>{
-        if (u.userId != userId) { 
-          const option = document.createElement('option');
-          option.value = u.userId.toString();
-          option.innerText = u.userName;
-          select.append(option);
-        }
-      })
+    if (msg.type == 'ready') {
+      stream!.innerHTML+='<div class="alert mb-1 p-1 alert-warning">Table started by user! dealer: '+(msg.dealer==position?'you':'@ pos. '+msg.dealer)+'</div>'
+      if ((msg.userList!.length > 2 && msg.dealer!+1==position) || (msg.userList!.length < 3 && msg.dealer == position)) {
+        stream!.innerHTML+=`<div class="alert mb-1 p-1 alert-warning">You are the small blind, you bet 500</div>`
+      }else if ((msg.userList!.length > 2 && msg.dealer!+2==position)  || (msg.userList!.length < 3 && msg.dealer!+1 == position)){
+        stream!.innerHTML+=`<div class="alert mb-1 p-1 alert-warning">You are the big blind, you bet 1000</div>`
+      }
       return;
     }
-    if (msg.type == 'start') {
-      stream!.innerHTML+='<div class="alert mb-1 p-1 alert-warning">Table started by user! dealer: '+(msg.dealer==position?'you':'position '+msg.dealer)+'</div>'
-      return;
+    if (msg.type == 'upnext') {
+      if (msg.position == position) {
+        stream!.innerHTML+=`<div class="alert mb-1 p-1 alert-info">It's your turn, choose your action!</div>`
+      }
     }
+  }
+  ws.onclose = ()=>{
+    disconnect();
   }
 
   (document.querySelector('#table') as HTMLDivElement).classList.remove('d-none');
