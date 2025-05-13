@@ -5,51 +5,67 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chat</title>
+  <title>Poker</title>
 </head>
 
-<body>
+<body class="text-light">
 
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <nav class="navbar navbar-expand-lg" style="background: rgb(125, 0, 0);">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Poker Client</a>
+      <a class="navbar-brand text-light" href="#">Poker Client</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-        </ul>
-        <form class="d-flex">
-          <input type="text" id="name" class="form-control me-2 d-inline-block" placeholder="Name">
-          <button type="button" class="btn btn-primary col-auto d-inline-block" id="login">Login</button>
+        <form class="d-flex ms-auto">
+          <label for="name" class="my-auto me-2">Username:</label>
+          <input type="text" id="name" class="form-control bg-transparent text-light me-2 d-inline-block"
+            autocomplete="off" value="1">
+          <button type="button" class="btn btn-secondary col-auto d-inline-block" id="login">Login</button>
           <button type="button" class="btn btn-warning col-auto d-none ms-2 d-inline-block" id="logout">Logout</button>
         </form>
       </div>
     </div>
   </nav>
 
-  <div class="container">
+  <div class="container-fluid">
     <!-- <div class="row my-5">
       <div class="display-3 text-center">Poker Client</div>
     </div> -->
 
     <div class="row w-100 my-2 d-none" id="table">
-      <div class="col-12 pt-2 mb-2" id="table-count">tbl</div>
-      <div class="col-12 pt-2" id="stream">
-        <ul class="list-group mb-2" id="users">
-          
-        </ul>
+      <div class="col-3">
+        <p class="my-2" id="table-count"></p>
+        <div class="pt-2" id="stream">
+          <ul class="list-group mb-2" id="users">
+
+          </ul>
+        </div>
+        <p class="a btn btn-primary" id="readyUp">Ready (for testing teehee)</p>
       </div>
-      <div class="a btn btn-primary" id="readyUp">Ready (for testing teehee)</div>
+      <div class="col-9 mt-2 d-flex justify-content-center align-items-center">
+        <div class="table-container">
+          <img src="src/images/rect1.png" class="table-image" alt="table">
+          <img src="src/images/profilepicture.png" class="player p1" alt="">
+          <img src="src/images/profilepicture.png" class="player p2" alt="">
+          <img src="src/images/profilepicture.png" class="player p3" alt="">
+          <img src="src/images/profilepicture.png" class="player p4" alt="">
+          <img src="src/images/profilepicture.png" class="player p5" alt="">
+          <img src="src/images/profilepicture.png" class="player p6" alt="">
+          <img src="src/images/profilepicture.png" class="player p7" alt="">
+          <img src="src/images/profilepicture.png" class="player p8" alt="">
+          <img src="src/images/profilepicture.png" class="player p9" alt="">
+          <img src="src/images/profilepicture.png" class="player p10" alt="">
+          <style>
+
+          </style>
+
+        </div>
+      </div>
     </div>
   </div>
+
   <script type="module" src="/src/main.ts"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"

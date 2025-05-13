@@ -1,10 +1,83 @@
+body {
+    background: rgb(100, 0, 0) !important;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100%;
+}
 
 #stream {
     height: 65vh;
     overflow-y: scroll;
 }
 
-#stream2{
+#stream2 {
     height: 60vh;
     overflow-y: scroll;
+}
+
+/* table */
+.table-container {
+    position: relative;
+    width: 55%;
+}
+
+.table-image {
+    width: 100%;
+    display: block;
+}
+
+.player {
+    position: absolute;
+    border-radius: 50%;
+    height: 30%;
+}
+
+.p1 {
+    top: -10%;
+    left: 0%;
+}
+
+.p2 {
+    top: -20%;
+    left: 28.3%;
+}
+
+.p3 {
+    top: -20%;
+    left: 56.6%;
+}
+
+.p4 {
+    top: -10%;
+    right: 0%;
+}
+
+.p5 {
+    top: 35%;
+    right: -10%;
+}
+
+.p6 {
+    bottom: -10%;
+    right: 0%;
+}
+
+.p7 {
+    bottom: -20%;
+    left: 56.6%;
+}
+
+.p8 {
+    bottom: -20%;
+    left: 28.3%;
+}
+
+.p9 {
+    bottom: -10%;
+    left: 0%;
+}
+
+.p10 {
+    top: 35%;
+    left: -10%;
 }

@@ -1,10 +1,10 @@
-export default interface IMessageProtocol{
+export default interface IMessageProtocol {
     type: string,
     userId: number,
     userName?: string,
     text?: string,
-    userList? : {userId:number, userName:string, position: number}[],
+    userList?: { userId: number, userName: string, position: number }[],
     tableId?: number,
-    position?:number,
-    dealer?:number
+    position?: number,
+    dealer?: number
 }
