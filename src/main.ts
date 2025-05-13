@@ -7,6 +7,7 @@ let userId : number;
 let userName : string;
 let stream = document.querySelector('#stream');
 let users : {userId:number, userName:string}[] = [];
+let tableId : number;
 
 const connect = ()=>{
   ws = new WebSocket('ws://localhost:8081');
@@ -24,15 +25,16 @@ const connect = ()=>{
   }
 
   ws.onmessage = (event)=>{
-    console.log(event);
+    // console.log(event);
     const msg : IMessageProtocol = JSON.parse(event.data);
     console.log(msg);
     if (msg.type == 'init') {
       userId = msg.userId;
+      tableId = msg.tableId!;
       stream!.innerHTML+='<div class="alert mb-1 p-1 alert-secondary">User '+userId+' (You) has joined!</div>';
       return;
     }
-    if (msg.type == 'joined') {
+    if (msg.type == 'join') {
       if (userId! != msg.userId) {
         stream!.innerHTML+='<div class="alert mb-1 p-1 alert-secondary">'+msg.userName+' (User '+msg.userId+') has joined!</div>';
       }
@@ -64,16 +66,15 @@ const connect = ()=>{
   }
 
   (document.querySelector('#table') as HTMLDivElement).classList.remove('d-none');
-  (document.querySelector('#logout-cont') as HTMLDivElement).classList.remove('d-none');
-  (document.querySelector('#login-cont') as HTMLDivElement).classList.add('d-none');
+  (document.querySelector('#logout') as HTMLDivElement).classList.remove('d-none');
+  (document.querySelector('#login') as HTMLDivElement).classList.add('d-none');
 }
 
 const disconnect = ()=>{
   const msg : IMessageProtocol = {
     type:'disc',
     userId:userId!,
-    userName:userName,
-    text:''
+    userName:userName
   }
   ws.send(JSON.stringify(msg));
   ws.close = () => {
@@ -81,21 +82,10 @@ const disconnect = ()=>{
     
   };
   (document.querySelector('#table') as HTMLDivElement).classList.add('d-none');
-  (document.querySelector('#logout-cont') as HTMLDivElement).classList.add('d-none');
-  (document.querySelector('#login-cont') as HTMLDivElement).classList.remove('d-none');
+  (document.querySelector('#logout') as HTMLDivElement).classList.add('d-none');
+  (document.querySelector('#login') as HTMLDivElement).classList.remove('d-none');
 
 }
-
-const send = ()=>{
-  const msg : IMessageProtocol = {
-    type:'text',
-    userId:userId!,
-    userName:userName,
-    text:(document.querySelector('#message') as HTMLInputElement).value
-  }
-  ws.send(JSON.stringify(msg));
-}
-
 
 (document.querySelector('#login') as HTMLButtonElement).addEventListener('click', ()=>{
   connect();
@@ -106,14 +96,23 @@ const send = ()=>{
   stream!.innerHTML = "";
 });
 
-(document.querySelector('#send') as HTMLButtonElement).addEventListener('click', (e)=>{
-  e.preventDefault();
-  let text = (document.querySelector('#message') as HTMLInputElement);
-  if (text.value != "") {
-    send();
-  }
-  text.value = "";
-});
+// const send = ()=>{
+//   const msg : IMessageProtocol = {
+//     type:'text',
+//     userId:userId!,
+//     userName:userName,
+//     text:(document.querySelector('#message') as HTMLInputElement).value
+//   }
+//   ws.send(JSON.stringify(msg));
+// }
+// (document.querySelector('#send') as HTMLButtonElement).addEventListener('click', (e)=>{
+//   e.preventDefault();
+//   let text = (document.querySelector('#message') as HTMLInputElement);
+//   if (text.value != "") {
+//     send();
+//   }
+//   text.value = "";
+// });
 
 window.onbeforeunload = function () {
   // e.preventDefault();
