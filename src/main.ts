@@ -8,6 +8,7 @@ let userName : string;
 let stream = document.querySelector('#stream');
 let users : {userId:number, userName:string}[] = [];
 let tableId : number;
+let position : number;
 
 const connect = ()=>{
   ws = new WebSocket('ws://localhost:8081');
@@ -31,6 +32,7 @@ const connect = ()=>{
     if (msg.type == 'init') {
       userId = msg.userId;
       tableId = msg.tableId!;
+      position = msg.position!;
       stream!.innerHTML+='<div class="alert mb-1 p-1 alert-secondary">User '+userId+' (You) has joined!</div>';
       return;
     }
@@ -63,6 +65,10 @@ const connect = ()=>{
       })
       return;
     }
+    if (msg.type == 'start') {
+      stream!.innerHTML+='<div class="alert mb-1 p-1 alert-warning">Table started by user! dealer: '+(msg.dealer==position?'you':'position '+msg.dealer)+'</div>'
+      return;
+    }
   }
 
   (document.querySelector('#table') as HTMLDivElement).classList.remove('d-none');
@@ -87,8 +93,20 @@ const disconnect = ()=>{
 
 }
 
+const ready = ()=>{
+  const msg : IMessageProtocol = {
+    type:'ready',
+    userId:userId!
+  }
+  ws.send(JSON.stringify(msg));
+}
+
 (document.querySelector('#login') as HTMLButtonElement).addEventListener('click', ()=>{
   connect();
+});
+
+(document.querySelector('#readyUp') as HTMLButtonElement).addEventListener('click', ()=>{
+  ready();
 });
 
 (document.querySelector('#logout') as HTMLButtonElement).addEventListener('click', ()=>{
@@ -114,8 +132,11 @@ const disconnect = ()=>{
 //   text.value = "";
 // });
 
-window.onbeforeunload = function () {
-  // e.preventDefault();
-  disconnect();
+window.onbeforeunload = function (e) {
+  if (ws!=null) {
+    // UNCOMMENT ON RELEASE
+    // e.preventDefault();
+    disconnect();
+  }
 };
 
