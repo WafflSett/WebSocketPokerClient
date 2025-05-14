@@ -1,36 +1,57 @@
 body {
-    background: rgb(100, 0, 0) !important;
-    background-repeat: no-repeat;
+
+    /* background: rgb(100, 0, 0) !important; */
+    /* background: rgb(0, 100, 0) !important; */
+    /* background-repeat: no-repeat; */
+
+    /* test */
+    background: url(images/bg2.png);
+    background-size: auto;
+
     background-attachment: fixed;
     height: 100%;
 }
 
+#loginContainer {
+    margin-top: 10rem;
+    background: rgba(0, 30, 0, 0.4);
+    padding: 1rem;
+    border-radius: 25px;
+    width: 30%;
+}
+
+@media only screen and (max-width: 450px) {
+    #loginContainer {
+        width: auto;
+        margin-top: 5rem;
+        /* background: none; */
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+}
+
 #stream {
-    height: 55vh;
+    height: 65vh;
     overflow-y: scroll;
 }
 
 /* WebKit scrollbar testreszabása */
-#stream::-webkit-scrollbar,
 #stream::-webkit-scrollbar {
-  width: 12px;
+    width: 12px;
 }
 
-#stream::-webkit-scrollbar-track,
-#stream2::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 25px;
+#stream::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 25px;
 }
 
-#stream::-webkit-scrollbar-thumb,
-#stream2::-webkit-scrollbar-thumb {
-  background: rgb(100, 100, 100);
-  border-radius: 6px;
+#stream::-webkit-scrollbar-thumb {
+    background: rgb(100, 100, 100);
+    border-radius: 6px;
 }
 
-#stream::-webkit-scrollbar-thumb:hover,
-#stream2::-webkit-scrollbar-thumb:hover {
-  background: #555;
+#stream::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 /* table */
@@ -98,4 +119,44 @@ body {
 .p10 {
     top: 35%;
     left: -10%;
+}
+
+
+.button {
+    color: white;
+    padding: 0.25rem 0.5rem !important;
+    position: relative;
+    z-index: 0;
+}
+
+.button:before,
+.button:after {
+    position: absolute;
+    opacity: 0.5;
+    height: 100%;
+    width: 2px;
+    content: '';
+    background: white;
+    transition: all 0.2s;
+}
+
+.button:before {
+    left: 0px;
+    top: 0px;
+}
+
+.button:after {
+    right: 0px;
+    bottom: 0px;
+}
+
+.button:hover {
+    color: white !important;
+}
+
+.button:hover:before,
+.button:hover:after {
+    opacity: 1;
+    height: 0.2rem;
+    width: 100%;
 }
