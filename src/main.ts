@@ -9,6 +9,8 @@ let stream = document.querySelector('#stream');
 // let users : {userId:number, userName:string}[] = [];
 let tableId: number;
 let position: number;
+let btnDiv = (document.querySelector('#action-btns') as HTMLDivElement);
+let myBet :number = 0;
 
 const connect = () => {
   ws = new WebSocket('ws://localhost:8081');
@@ -57,22 +59,47 @@ const connect = () => {
       return;
     }
     if (msg.type == 'disc') {
-      stream!.innerHTML += '<div class="alert mb-1 p-1 alert-secondary">' + msg.userName + ' (User ' + msg.userId + ') has disconnected!</div>'
+      stream!.innerHTML += '<div class="alert mb-1 p-1 alert-secondary">' + msg.userName + ' (User ' + msg.userId + ') has disconnected!</div>';
       return;
     }
     if (msg.type == 'ready') {
       stream!.innerHTML += '<div class="alert mb-1 p-1 alert-warning">Table started by user! dealer: ' + (msg.dealer == position ? 'you' : '@ pos. ' + msg.dealer) + '</div>'
       if ((msg.userList!.length > 2 && msg.dealer! + 1 == position) || (msg.userList!.length < 3 && msg.dealer == position)) {
-        stream!.innerHTML += `<div class="alert mb-1 p-1 alert-warning">You are the small blind, you bet 500</div>`
+        stream!.innerHTML += `<div class="alert mb-1 p-1 alert-warning">You are the small blind, you bet ${msg.bet!/2}</div>`
+        bet(msg.bet!/2, true);
+        myBet = msg.bet!/2;
       } else if ((msg.userList!.length > 2 && msg.dealer! + 2 == position) || (msg.userList!.length < 3 && msg.dealer! + 1 == position)) {
-        stream!.innerHTML += `<div class="alert mb-1 p-1 alert-warning">You are the big blind, you bet 1000</div>`
+        stream!.innerHTML += `<div class="alert mb-1 p-1 alert-warning">You are the big blind, you bet ${msg.bet!}</div>`
+        bet(msg.bet!, true);
+        myBet = msg.bet!;
       }
       return;
     }
     if (msg.type == 'upnext') {
+      btnDiv.innerHTML='';
       if (msg.position == position) {
-        stream!.innerHTML += `<div class="alert mb-1 p-1 alert-info">It's your turn, choose your action!</div>`
+        stream!.innerHTML += `<div class="alert mb-1 p-1 alert-info">It's your turn, choose your action! Pot: ${msg.pot}  Running bet: ${msg.runningBet}</div>`;
+        btnDiv.classList.remove('d-none');
+        if (msg.runningBet! > 0) {
+          // match runningBet or raise runningBet by at least 2x the blind
+          btnDiv.innerHTML+='<a class="btn btn-primary" id="call-btn">Call</a>' // call current running bet
+          btnDiv.innerHTML+='<a class="btn btn-primary" id="raise-btn">Raise</a>'; // raise current running bet
+          (document.querySelector('#call-btn') as HTMLLinkElement).addEventListener('click', ()=>{bet(msg.runningBet!-myBet); console.log('call');});
+          (document.querySelector('#raise-btn') as HTMLLinkElement).addEventListener('click', ()=>{bet(Number((document.querySelector('#bet-amount') as HTMLInputElement).value!)); console.log('raise');});
+        }else{
+          // set new runningBet or pass
+          btnDiv.innerHTML+='<a class="btn btn-primary" id="bet-btn">Bet</a>' // set a starting bet (after flops only)
+          btnDiv.innerHTML+='<a class="btn btn-primary" id="check-btn">Check</a>' // basically pass button
+        }
+        (document.querySelector('#bet-amount') as HTMLInputElement).classList.remove('d-none')
+        btnDiv.innerHTML+='<a class="btn btn-primary" id="fold-btn">Fold</a>'; // surrender hand
+        (document.querySelector('#fold-btn') as HTMLDivElement).addEventListener('click', ()=>{fold()});
+      }else{
+        btnDiv.classList.add('d-none');
       }
+    }
+    if (msg.type == 'hand') {
+      stream!.innerHTML += `<div class="alert mb-1 p-1 alert-info">Your cards are: ${msg.hand}</div>`;
     }
   }
   ws.onclose = () => {
@@ -80,6 +107,25 @@ const connect = () => {
   }
 
 
+}
+
+const fold = () =>{
+  const msg: IMessageProtocol = {
+    type: 'fold',
+    userId: userId!,
+    userName: userName
+  }
+  ws.send(JSON.stringify(msg));
+}
+
+const bet = (amount : number, blind?:boolean)=>{
+  const msg: IMessageProtocol = {
+    type: (blind?'blind':'bet'),
+    userId: userId!,
+    userName: userName,
+    bet: amount
+  }
+  ws.send(JSON.stringify(msg));
 }
 
 const disconnect = () => {
@@ -93,6 +139,8 @@ const disconnect = () => {
     console.log('Disconnected from server');
 
   };
+  stream!.innerHTML = '';
+  (document.querySelector('#users') as HTMLDivElement).innerHTML = '';
   (document.querySelector('#table') as HTMLDivElement).classList.add('d-none');
   (document.querySelector('#logout') as HTMLDivElement).classList.add('d-none');
   (document.querySelector('#login') as HTMLDivElement).classList.remove('d-none');
@@ -148,7 +196,7 @@ const ready = () => {
 window.onbeforeunload = function (e) {
   if (ws != null) {
     // UNCOMMENT ON RELEASE
-    // // frontend hiba, amikor uncommentelve van
+    // akkor is disconnectel ha nemet nyomsz..
     // e.preventDefault();
     disconnect();
   }

@@ -6,5 +6,9 @@ export default interface IMessageProtocol {
     userList?: { userId: number, userName: string, position: number }[],
     tableId?: number,
     position?: number,
-    dealer?: number
+    dealer?: number,
+    hand?: string[],
+    pot?: number,
+    runningBet?: number,
+    bet?: number
 }
