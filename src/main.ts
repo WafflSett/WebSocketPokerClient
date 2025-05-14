@@ -40,7 +40,6 @@ const connect = () => {
       userId = msg.userId;
       tableId = msg.tableId!;
       position = msg.position!;
-      // TODO || when disconnect then connect -> list is not refreshed || suggest -> foreach each time an user connected, not +=
       stream!.innerHTML += `<div class="alert mb-1 p-1 alert-secondary">User ${userId} (You) has joined, @ position ${position}!</div>`;
       let usersGroupList = (document.querySelector('#users') as HTMLDivElement);
       msg.userList!.forEach(x => {
