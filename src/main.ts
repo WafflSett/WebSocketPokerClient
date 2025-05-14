@@ -27,9 +27,9 @@ const connect = () => {
 
 
     (document.querySelector('#table') as HTMLDivElement).classList.remove('d-none');
-    (document.querySelector('#logout') as HTMLDivElement).classList.remove('d-none');
-    (document.querySelector('#login') as HTMLDivElement).classList.add('d-none');
-    (document.querySelector('#name') as HTMLInputElement).readOnly = true;
+    (document.querySelector('#navForm') as HTMLInputElement).classList.remove('d-none');
+    (document.querySelector('#username') as HTMLInputElement).innerHTML = userName;
+    (document.querySelector('#loginContainer') as HTMLDivElement).classList.add('d-none');
   }
 
   ws.onmessage = (event) => {
@@ -52,7 +52,7 @@ const connect = () => {
         stream!.innerHTML += `<div class="alert mb-1 p-1 alert-secondary">${msg.userName} (User ${msg.userId}) has joined, @ position ${msg.position}!</div>`;
         (document.querySelector('#users') as HTMLDivElement).innerHTML += `<li class="list-group-item">${msg.userName} @ pos. ${msg.position}</li>`
       } else {
-        (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-5">Welcome to Table ${msg.tableId}</div>`;
+        (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`;
       }
       return;
     }
@@ -94,9 +94,8 @@ const disconnect = () => {
 
   };
   (document.querySelector('#table') as HTMLDivElement).classList.add('d-none');
-  (document.querySelector('#logout') as HTMLDivElement).classList.add('d-none');
-  (document.querySelector('#login') as HTMLDivElement).classList.remove('d-none');
-  (document.querySelector('#name') as HTMLInputElement).readOnly = false;
+  (document.querySelector('#navForm') as HTMLInputElement).classList.add('d-none');
+  (document.querySelector('#loginContainer') as HTMLDivElement).classList.remove('d-none');
 }
 
 
