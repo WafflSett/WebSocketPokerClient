@@ -33,7 +33,8 @@
     <p class="display-6">Log in to play</p>
     <form>
       <label for="name" class="mt-4">Username:</label>
-      <input type="text" id="name" class="form-control bg-transparent text-light me-2 d-inline-block" autocomplete="off" value="joska">
+      <input type="text" id="name" class="form-control bg-transparent text-light me-2 d-inline-block" autocomplete="off"
+        value="joska">
       <button type="button" class="button nav-link col-auto d-inline-block mt-5" id="login">Login</button>
     </form>
   </div>
@@ -49,29 +50,58 @@
           <!-- everything else -->
         </div>
         <p class="a btn btn-primary mt-2" id="readyUp">Ready (for testing teehee)</p>
-        <input type="number" class="form-control d-none" placeholder="Bet amount (still for testing)" id="bet-amount">
-        <div class="mt-2 d-none" id="action-btns">
-
-        </div>
       </div>
       <div class="col-9 mt-2 d-flex justify-content-center align-items-center">
         <div class="table-container">
           <img src="src/images/rect1.png" class="table-image" alt="table">
-          <img src="src/images/profilepicture.png" class="player p1" alt="">
-          <img src="src/images/profilepicture.png" class="player p2" alt="">
-          <img src="src/images/profilepicture.png" class="player p3" alt="">
-          <img src="src/images/profilepicture.png" class="player p4" alt="">
-          <img src="src/images/profilepicture.png" class="player p5" alt="">
-          <img src="src/images/profilepicture.png" class="player p6" alt="">
-          <img src="src/images/profilepicture.png" class="player p7" alt="">
-          <img src="src/images/profilepicture.png" class="player p8" alt="">
-          <img src="src/images/profilepicture.png" class="player p9" alt="">
-          <img src="src/images/profilepicture.png" class="player p10" alt="">
-          <style>
-
-          </style>
-
+          <div class="p0 d-none" style="position: absolute; height: 30%;">
+            <img src="src/images/profilepicture.png" class="player" alt="">
+            <span id="displayedUName">0</span>
+          </div>
+          <div class="p1 d-none" style="position: absolute; height: 30%;">
+            <img src="src/images/profilepicture.png" class="player" alt="">
+            <span id="displayedUName">1</span>
+          </div>
+          <div class="p2 d-none" style="position: absolute; height: 30%;">
+            <img src="src/images/profilepicture.png" class="player" alt="">
+            <span id="displayedUName">2</span>
+          </div>
+          <div class="p3 d-none" style="position: absolute; height: 30%;">
+            <img src="src/images/profilepicture.png" class="player" alt="">
+            <span id="displayedUName">3</span>
+          </div>
+          <div class="p4 d-none" style="position: absolute; height: 30%;">
+            <img src="src/images/profilepicture.png" class="player" alt="">
+            <span id="displayedUName">4</span>
+          </div>
+          <div class="p5 d-none" style="position: absolute; height: 30%;">
+            <img src="src/images/profilepicture.png" class="player" alt="">
+            <span id="displayedUName">5</span>
+          </div>
+          <div class="p6 d-none" style="position: absolute; height: 30%;">
+            <img src="src/images/profilepicture.png" class="player" alt="">
+            <span id="displayedUName">6</span>
+          </div>
+          <div class="p7 d-none" style="position: absolute; height: 30%;">
+            <img src="src/images/profilepicture.png" class="player" alt="">
+            <span id="displayedUName">7</span>
+          </div>
+          <div class="p8 d-none" style="position: absolute; height: 30%;">
+            <img src="src/images/profilepicture.png" class="player" alt="">
+            <span id="displayedUName">8</span>
+          </div>
+          <div class="p9 d-none" style="position: absolute; height: 30%;">
+            <img src="src/images/profilepicture.png" class="player" alt="">
+            <span id="displayedUName">9</span>
+          </div>
         </div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-3"></div>
+      <div class="col-9 d-flex d-none" id="action-btnsMainDiv">
+        <input type="number" class="form-control w-50 me-2 d-none" placeholder="Bet amount/testing" id="bet-amount">
+        <div class="w-50 d-flex" id="action-btns"></div>
       </div>
     </div>
   </div>
