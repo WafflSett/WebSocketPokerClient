@@ -5,29 +5,31 @@ body {
     /* background-repeat: no-repeat; */
 
     /* test */
-    background: url(images/bg2.png);
-    background-size: auto;
+    background: url(images/BAHISAAsset2.svg);
+    background-size: 120%;
+    background-position: center;
 
     background-attachment: fixed;
     height: 100%;
 }
 
+/* body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    filter: blur(2px);
+    z-index: -1;
+} */
+
 #loginContainer {
     margin-top: 10rem;
-    background: rgba(0, 30, 0, 0.4);
+    background: rgba(18, 16, 11, .69);
     padding: 1rem;
     border-radius: 25px;
-    width: 30%;
-}
-
-@media only screen and (max-width: 450px) {
-    #loginContainer {
-        width: auto;
-        margin-top: 5rem;
-        /* background: none; */
-        margin-left: 1rem;
-        margin-right: 1rem;
-    }
 }
 
 #stream {

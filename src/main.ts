@@ -10,6 +10,7 @@ let stream = document.querySelector('#stream');
 let tableId: number;
 let position: number;
 let btnDiv = (document.querySelector('#action-btns') as HTMLDivElement);
+let betAmount: HTMLInputElement = (document.querySelector('#bet-amount') as HTMLInputElement);
 let myBet: number = 0;
 
 const connect = () => {
@@ -61,7 +62,7 @@ const connect = () => {
       if (msg.position != undefined) {
         const currPosition: number = msg.position;
         let currUName: any = msg.userName;
-        
+
         for (let i = 0; i < 10; i++) {
           if (i <= currPosition) {
             (document.querySelector('.p' + (i)) as HTMLDivElement).classList.remove('d-none');
@@ -83,6 +84,9 @@ const connect = () => {
       return;
     }
     if (msg.type == 'ready') {
+      document.querySelectorAll('#readyUp').forEach((btn: any) => {
+        btn.classList.add('d-none');
+      })
       stream!.innerHTML += '<div class="alert mb-1 p-1 alert-warning">Table started by user! dealer: ' + (msg.dealer == position ? 'you' : '@ pos. ' + msg.dealer) + '</div>'
       if ((msg.userList!.length > 2 && msg.dealer! + 1 == position) || (msg.userList!.length < 3 && msg.dealer == position)) {
         stream!.innerHTML += `<div class="alert mb-1 p-1 alert-warning">You are the small blind, you bet ${msg.bet! / 2}</div>`
@@ -102,20 +106,73 @@ const connect = () => {
         (document.querySelector('#action-btnsMainDiv') as HTMLDivElement).classList.remove('d-none');
         if (msg.runningBet! > 0) {
           // match runningBet or raise runningBet by at least 2x the blind
-          btnDiv.innerHTML += '<button class="btn btn-warning w-25 me-2" id="call-btn">Call</button>' // call current running bet
-          btnDiv.innerHTML += '<button class="btn btn-secondary w-25 me-2" id="raise-btn">Raise</button>'; // raise current running bet
-          (document.querySelector('#call-btn') as HTMLLinkElement).addEventListener('click', () => { bet(msg.runningBet! - myBet); console.log('call'); });
-          (document.querySelector('#raise-btn') as HTMLLinkElement).addEventListener('click', () => { bet(Number((document.querySelector('#bet-amount') as HTMLInputElement).value!)); console.log('raise'); });
+
+          // btnDiv.innerHTML += '<button class="btn btn-warning w-25 me-2" id="call-btn">Call</button>' // call current running bet
+          const callBtn = document.createElement('button');
+          callBtn.className = "btn btn-warning w-100 me-2";
+          callBtn.id = "call-btn";
+          callBtn.textContent = "Call";
+
+          // btnDiv.innerHTML += '<button class="btn btn-secondary w-25 me-2" id="raise-btn">Raise</button>'; // raise current running bet
+          const raiseBtn = document.createElement('button');
+          raiseBtn.className = 'btn btn-secondary w-100 me-2';
+          raiseBtn.id = 'raise-btn';
+          raiseBtn.textContent = 'Raise';
+
+          betAmount.min = String(msg.runningBet);
+
+          // (document.querySelector('#call-btn') as HTMLButtonElement).addEventListener('click', () => { bet(msg.runningBet! - myBet); console.log('call'); });
+          callBtn.addEventListener('click', () => {
+            bet(msg.runningBet! - myBet);
+            betAmount.classList.add('d-none');
+            console.log('call');
+          });
+
+          // (document.querySelector('#raise-btn') as HTMLButtonElement).addEventListener('click', () => { bet(Number(betAmount.value!)); console.log('raise'); });
+          raiseBtn.addEventListener('click', () => {
+            bet(Number(betAmount.value!));
+            betAmount.classList.add('d-none');
+            console.log('raise');
+          });
+
+          btnDiv.appendChild(callBtn);
+          btnDiv.appendChild(raiseBtn);
         } else {
           // set new runningBet or pass
-          btnDiv.innerHTML += '<button class="btn btn-success w-25 me-2" id="bet-btn">Bet</button>' // set a starting bet (after flops only)
-          btnDiv.innerHTML += '<button class="btn btn-primary w-25 me-2" id="check-btn">Check</button>' // basically pass button
+          // btnDiv.innerHTML += '<button class="btn btn-success w-25 me-2" id="bet-btn">Bet</button>' // set a starting bet (after flops only)
+          const betBtn = document.createElement('button');
+          betBtn.className = 'btn btn-success w-100 me-2';
+          betBtn.id = 'bet-btn';
+          betBtn.textContent = 'Bet';
+          btnDiv.append(betBtn);
+
+          // btnDiv.innerHTML += '<button class="btn btn-primary w-25 me-2" id="check-btn">Check</button>' // basically pass button
+          const checkBtn = document.createElement('button');
+          checkBtn.className = 'btn btn-primary w-100 me-2';
+          checkBtn.id = 'check-btn';
+          checkBtn.textContent = 'Check';
+          btnDiv.append(checkBtn);
         }
-        (document.querySelector('#bet-amount') as HTMLInputElement).classList.remove('d-none');
-        btnDiv.innerHTML += '<button class="btn btn-danger w-25 me-2" id="fold-btn">Fold</button>'; // surrender hand
-        (document.querySelector('#fold-btn') as HTMLDivElement).addEventListener('click', () => { fold() });
+        betAmount.classList.remove('d-none');
+        // btnDiv.innerHTML += '<button class="btn btn-danger w-25 me-2" id="fold-btn">Fold</button>'; // surrender hand
+        const foldBtn = document.createElement('button');
+        foldBtn.className = 'btn btn-danger w-100 me-2';
+        foldBtn.id = 'fold-btn';
+        foldBtn.textContent = 'Fold';
+        console.log("before append fold");
+        btnDiv.append(foldBtn);
+        console.log(btnDiv);
+        
+        console.log("appended fold");
+        
+
+        foldBtn.addEventListener('click', () => {
+          betAmount.classList.add('d-none');
+          fold()
+        });
       } else {
-        btnDiv.classList.add('d-none');
+        (document.querySelector('#action-btnsMainDiv') as HTMLDivElement).classList.add('d-none');
+        betAmount.classList.add('d-none');
       }
     }
     if (msg.type == 'hand') {
@@ -193,9 +250,6 @@ const ready = () => {
 });
 
 (document.querySelector('#readyUp') as HTMLButtonElement).addEventListener('click', () => {
-  document.querySelectorAll('#readyUp').forEach((btn: any) => {
-    btn.classList.add('d-none');
-  })
   ready();
 });
 

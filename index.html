@@ -10,9 +10,8 @@
 
 <body class="text-light">
 
-  <nav class="navbar navbar-expand-lg navbar-dark"
-    style="background: linear-gradient(90deg,rgba(0, 0, 0, 0) 40%, rgba(0, 30, 0, 0.4) 100%);">
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark"> -->
+  <!-- <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(90deg,rgba(0, 0, 0, 0) 40%, rgba(18, 16, 11, .69) 100%);"> -->
+  <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
       <a class="navbar-brand text-light" href="">Poker Client</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -29,7 +28,8 @@
     </div>
   </nav>
 
-  <div class="container justify-content-center" id="loginContainer">
+  <div class="container justify-content-center mx-auto col-xs-12 col-sm-12 col-md-10 col-lg-6 col-xl-6 col-xxl-3"
+    id="loginContainer">
     <p class="display-6">Log in to play</p>
     <form>
       <label for="name" class="mt-4">Username:</label>
@@ -41,7 +41,7 @@
   <div class="container-fluid" id="main">
 
     <div class="row w-100 my-2 d-none" id="table">
-      <div class="col-3">
+      <div class="col-2">
         <p class="my-2" id="table-count"></p>
         <ul class="list-group mb-2" id="users"> <!-- user list -->
 
@@ -51,9 +51,9 @@
         </div>
         <p class="a btn btn-primary mt-2" id="readyUp">Ready (for testing teehee)</p>
       </div>
-      <div class="col-9 mt-2 d-flex justify-content-center align-items-center">
+      <div class="col-8 mt-2 d-flex justify-content-center align-items-center">
         <div class="table-container">
-          <img src="src/images/rect1.png" class="table-image" alt="table">
+          <img src="src/images/bg4.png" class="table-image" alt="table">
           <div class="p0 d-none" style="position: absolute; height: 30%;">
             <img src="src/images/profilepicture.png" class="player" alt="">
             <span id="displayedUName">0</span>
@@ -96,12 +96,11 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="row mt-2">
-      <div class="col-3"></div>
-      <div class="col-9 d-flex d-none" id="action-btnsMainDiv">
-        <input type="number" class="form-control w-50 me-2 d-none" placeholder="Bet amount/testing" id="bet-amount">
-        <div class="w-50 d-flex" id="action-btns"></div>
+      <div class="col-2">
+        <div class="d-flex d-none" id="action-btnsMainDiv">
+          <input type="number" class="form-control w-50 me-2 d-none" placeholder="Bet amount/testing" id="bet-amount">
+          <div class="w-50 d-flex" id="action-btns"></div>
+        </div>
       </div>
     </div>
   </div>
