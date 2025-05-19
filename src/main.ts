@@ -5,7 +5,7 @@ import IMessageProtocol from './IMessageProtocol';
 let ws: WebSocket;
 let userId: number;
 let userName: string;
-let stream = document.querySelector('#stream');
+// let stream = document.querySelector('#stream');
 // let users : {userId:number, userName:string}[] = [];
 let tableId: number;
 let position: number;
@@ -43,7 +43,7 @@ const connect = () => {
       userId = msg.userId;
       tableId = msg.tableId!;
       position = msg.position!;
-      stream!.innerHTML += `<div class="alert mb-1 p-1 alert-secondary">User ${userId} (You) has joined, @ position ${position}!</div>`;
+      // stream!.innerHTML += `<div class="alert mb-1 p-1 alert-secondary">User ${userId} (You) has joined, @ position ${position}!</div>`;
       // let usersGroupList = (document.querySelector('#users') as HTMLDivElement);
       // msg.userList!.forEach(x => {
       //   usersGroupList.innerHTML += `<li class="list-group-item">${x.userName} ${(x.userId == userId ? '(You)' : '')} @ pos. ${x.position}</li>`
@@ -52,7 +52,7 @@ const connect = () => {
     }
     if (msg.type == 'join') {
       if (userId! != msg.userId) {
-        stream!.innerHTML += `<div class="alert mb-1 p-1 alert-secondary">${msg.userName} (User ${msg.userId}) has joined, @ position ${msg.position}!</div>`;
+        // stream!.innerHTML += `<div class="alert mb-1 p-1 alert-secondary">${msg.userName} (User ${msg.userId}) has joined, @ position ${msg.position}!</div>`;
         // (document.querySelector('#users') as HTMLDivElement).innerHTML += `<li class="list-group-item">${msg.userName} @ pos. ${msg.position}</li>`
       } else {
         (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`;
@@ -76,7 +76,7 @@ const connect = () => {
       return;
     }
     if (msg.type == 'disc') {
-      stream!.innerHTML += '<div class="alert mb-1 p-1 alert-secondary">' + msg.userName + ' (User ' + msg.userId + ') has disconnected!</div>';
+      // stream!.innerHTML += '<div class="alert mb-1 p-1 alert-secondary">' + msg.userName + ' (User ' + msg.userId + ') has disconnected!</div>';
       // console.log(msg.position);
       (document.querySelector('.p' + msg.position) as HTMLDivElement).classList.add("d-none");
       // console.log((document.querySelector('.p' + msg.position) as HTMLDivElement));
@@ -87,22 +87,23 @@ const connect = () => {
       document.querySelectorAll('#readyUp').forEach((btn: any) => {
         btn.classList.add('d-none');
       })
-      stream!.innerHTML += '<div class="alert mb-1 p-1 alert-warning">Table started by user! dealer: ' + (msg.dealer == position ? 'you' : '@ pos. ' + msg.dealer) + '</div>'
+      // stream!.innerHTML += '<div class="alert mb-1 p-1 alert-warning">Table started by user! dealer: ' + (msg.dealer == position ? 'you' : '@ pos. ' + msg.dealer) + '</div>'
       if ((msg.userList!.length > 2 && msg.dealer! + 1 == position) || (msg.userList!.length < 3 && msg.dealer == position)) {
-        stream!.innerHTML += `<div class="alert mb-1 p-1 alert-warning">You are the small blind, you bet ${msg.bet! / 2}</div>`
+        // stream!.innerHTML += `<div class="alert mb-1 p-1 alert-warning">You are the small blind, you bet ${msg.bet! / 2}</div>`
         bet(msg.bet! / 2, true);
         myBet = msg.bet! / 2;
       } else if ((msg.userList!.length > 2 && msg.dealer! + 2 == position) || (msg.userList!.length < 3 && msg.dealer! + 1 == position)) {
-        stream!.innerHTML += `<div class="alert mb-1 p-1 alert-warning">You are the big blind, you bet ${msg.bet!}</div>`
+        // stream!.innerHTML += `<div class="alert mb-1 p-1 alert-warning">You are the big blind, you bet ${msg.bet!}</div>`
         bet(msg.bet!, true);
         myBet = msg.bet!;
       }
       return;
     }
     if (msg.type == 'upnext') {
+      btnDiv.classList.remove('d-none');
       btnDiv.innerHTML = '';
       if (msg.position == position) {
-        stream!.innerHTML += `<div class="alert mb-1 p-1 alert-info">It's your turn, choose your action! Pot: ${msg.pot}  Running bet: ${msg.runningBet}</div>`;
+        // stream!.innerHTML += `<div class="alert mb-1 p-1 alert-info">It's your turn, choose your action! Pot: ${msg.pot}  Running bet: ${msg.runningBet}</div>`;
         (document.querySelector('#action-btnsMainDiv') as HTMLDivElement).classList.remove('d-none');
         if (msg.runningBet! > 0) {
           // match runningBet or raise runningBet by at least 2x the blind
@@ -120,6 +121,7 @@ const connect = () => {
           raiseBtn.textContent = 'Raise';
 
           betAmount.min = String(msg.runningBet);
+          betAmount.value = String(msg.runningBet);
 
           // (document.querySelector('#call-btn') as HTMLButtonElement).addEventListener('click', () => { bet(msg.runningBet! - myBet); console.log('call'); });
           callBtn.addEventListener('click', () => {
@@ -159,12 +161,7 @@ const connect = () => {
         foldBtn.className = 'btn btn-danger w-100 me-2';
         foldBtn.id = 'fold-btn';
         foldBtn.textContent = 'Fold';
-        console.log("before append fold");
         btnDiv.append(foldBtn);
-        console.log(btnDiv);
-        
-        console.log("appended fold");
-        
 
         foldBtn.addEventListener('click', () => {
           betAmount.classList.add('d-none');
@@ -176,7 +173,9 @@ const connect = () => {
       }
     }
     if (msg.type == 'hand') {
-      stream!.innerHTML += `<div class="alert mb-1 p-1 alert-info">Your cards are: ${msg.hand}</div>`;
+      (document.querySelector('#cards') as HTMLDivElement).classList.remove('d-none');
+      // stream!.innerHTML += `<div class="alert mb-1 p-1 alert-info">Your cards are: ${msg.hand}</div>`;
+      console.log(msg.hand);
     }
   }
 
@@ -223,8 +222,8 @@ const disconnect = () => {
 
 
   (document.querySelector('.p' + (msg.userId - 1)) as HTMLDivElement).classList.add('d-none');
-  stream!.innerHTML = '';
-  (document.querySelector('#users') as HTMLDivElement).innerHTML = '';
+  // stream!.innerHTML = '';
+  // (document.querySelector('#users') as HTMLDivElement).innerHTML = '';
   (document.querySelector('#table') as HTMLDivElement).classList.add('d-none');
   (document.querySelector('#navForm') as HTMLInputElement).classList.add('d-none');
   (document.querySelector('#loginContainer') as HTMLDivElement).classList.remove('d-none');
@@ -255,7 +254,7 @@ const ready = () => {
 
 (document.querySelector('#logout') as HTMLButtonElement).addEventListener('click', () => {
   disconnect();
-  stream!.innerHTML = "";
+  // stream!.innerHTML = "";
 });
 
 // const send = ()=>{

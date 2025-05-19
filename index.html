@@ -11,7 +11,7 @@
 <body class="text-light">
 
   <!-- <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(90deg,rgba(0, 0, 0, 0) 40%, rgba(18, 16, 11, .69) 100%);"> -->
-  <nav class="navbar navbar-expand-lg">
+  <nav class="navbar navbar-expand-lg ">
     <div class="container-fluid">
       <a class="navbar-brand text-light" href="">Poker Client</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -40,18 +40,9 @@
   </div>
   <div class="container-fluid" id="main">
 
-    <div class="row w-100 my-2 d-none" id="table">
-      <div class="col-2">
-        <p class="my-2" id="table-count"></p>
-        <ul class="list-group mb-2" id="users"> <!-- user list -->
+    <div class="row w-100 my-2 d-none" id="table" style="height: 90vh;">
 
-        </ul>
-        <div class="p-2" id="stream">
-          <!-- everything else -->
-        </div>
-        <p class="a btn btn-primary mt-2" id="readyUp">Ready (for testing teehee)</p>
-      </div>
-      <div class="col-8 mt-2 d-flex justify-content-center align-items-center">
+      <div class="col-9 d-flex justify-content-center align-items-center">
         <div class="table-container">
           <img src="src/images/bg4.png" class="table-image" alt="table">
           <div class="p0 d-none" style="position: absolute; height: 30%;">
@@ -96,11 +87,27 @@
           </div>
         </div>
       </div>
-      <div class="col-2">
-        <div class="d-flex d-none" id="action-btnsMainDiv">
-          <input type="number" class="form-control w-50 me-2 d-none" placeholder="Bet amount/testing" id="bet-amount">
-          <div class="w-50 d-flex" id="action-btns"></div>
+
+      <div class="col-3 d-flex flex-column" style="height: 90vh;">
+        <p class="my-2" id="table-count"></p>
+        <!-- <div style="height: 50%; overflow: hidden; display: flex; flex-direction: column;">
+          <div class="px-2" id="stream"></div>
+        </div> -->
+
+        <div style="height: 50%; display: flex;" class="align-items-center d-flex mt-2" id="action-btnsMainDiv">
+          <button class="btn btn-primary mx-auto align-bottom w-50" id="readyUp">Ready</button>
+          <input type="number" class="form-control poker-input w-25 me-2 d-none" placeholder="Bet amount/testing" step="1"
+            id="bet-amount">
+          <div class="w-75 d-none" id="action-btns"></div>
         </div>
+
+        <div style="height: 50%; display: flex;" class="align-items-center d-flex mt-2" id="cardsDiv">
+          <div class="w-100 d-none" id="cards">
+            <img src="src/images/♥/♥A.png" class="w-50 h-50" style="float: left; transform: rotate(-20deg); transform: translate(10%);" alt="">
+            <img src="src/images/♠/♠A.png" class="w-50 h-50" style="transform: rotate(20deg) translate(-10%);" alt="">
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

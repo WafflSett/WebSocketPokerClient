@@ -1,3 +1,6 @@
+html{
+    overflow: hidden;
+}
 body {
 
     /* background: rgb(100, 0, 0) !important; */
@@ -5,8 +8,8 @@ body {
     /* background-repeat: no-repeat; */
 
     /* test */
-    background: url(images/BAHISAAsset2.svg);
-    background-size: 120%;
+    background: url(images/toEdit.png);
+    background-size: cover;
     background-position: center;
 
     background-attachment: fixed;
@@ -21,7 +24,7 @@ body {
     right: 0;
     bottom: 0;
     background: inherit;
-    filter: blur(2px);
+    filter: blur(10px);
     z-index: -1;
 } */
 
@@ -33,8 +36,8 @@ body {
 }
 
 #stream {
-    height: 65vh;
     overflow-y: scroll;
+    /* height: 40vh; */
 }
 
 /* WebKit scrollbar testreszabása */
@@ -59,7 +62,7 @@ body {
 /* table */
 .table-container {
     position: relative;
-    width: 60%;
+    width: 50%;
 }
 
 .table-image {
@@ -70,44 +73,48 @@ body {
 #displayedUName {
     position: absolute;
     left: 50%;
-    bottom: -20%;
+    top: 50%;
     transform: translate(-50%, -50%);
-    width: 8ch;
+    width: 6ch;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
-    background: rgba(150, 90, 90, 0.8);
+    /* background: rgba(150, 90, 90, 0.8); */
+    font-size: 1.3rem;
     border-radius: 25px;
+    font-weight: bold;
 }
 
 .player {
     border-radius: 50%;
     height: 100%;
+    filter: brightness(0.45);
 }
 
 .p0 {
-    top: -10%;
+    top: -11%;
     left: 0%;
+    /* filter: brightness(2); */ /* active player -> stream not needed */
 }
 
 .p1 {
-    top: -20%;
+    top: -22%;
     left: 28.3%;
 }
 
 .p2 {
-    top: -20%;
+    top: -22%;
     left: 56.6%;
 }
 
 .p3 {
-    top: -10%;
+    top: -11%;
     right: 0%;
 }
 
 .p4 {
     top: 35%;
-    right: -10%;
+    right: -12%;
 }
 
 .p5 {
@@ -132,7 +139,7 @@ body {
 
 .p9 {
     top: 35%;
-    left: -10%;
+    left: -12%;
 }
 
 
@@ -173,4 +180,31 @@ body {
     opacity: 1;
     height: 0.2rem;
     width: 100%;
+}
+
+/* disable selection */
+p,
+label,
+a,
+span {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+img {
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
+#readyUp {
+    background-color: #555;
+    border: gold 1px solid;
+    padding: 1rem;
+    transition: .3s;
+}
+#readyUp:hover {
+    background-color: #666;
+    transition: .3s;
+    border: rgb(255, 229, 80) 1px solid;
 }
