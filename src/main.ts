@@ -48,29 +48,22 @@ const connect = () => {
       // msg.userList!.forEach(x => {
       //   usersGroupList.innerHTML += `<li class="list-group-item">${x.userName} ${(x.userId == userId ? '(You)' : '')} @ pos. ${x.position}</li>`
       // })
+
+      if (msg.position != undefined) {
+        showOnlineUsers(msg.userList!, msg.position, msg.userName);
+      }
       return;
     }
     if (msg.type == 'join') {
-      if (userId! != msg.userId) {
-        // stream!.innerHTML += `<div class="alert mb-1 p-1 alert-secondary">${msg.userName} (User ${msg.userId}) has joined, @ position ${msg.position}!</div>`;
-        // (document.querySelector('#users') as HTMLDivElement).innerHTML += `<li class="list-group-item">${msg.userName} @ pos. ${msg.position}</li>`
-      } else {
-        (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`;
-      }
+      // if (userId! != msg.userId) {
+      //   // stream!.innerHTML += `<div class="alert mb-1 p-1 alert-secondary">${msg.userName} (User ${msg.userId}) has joined, @ position ${msg.position}!</div>`;
+      //   // (document.querySelector('#users') as HTMLDivElement).innerHTML += `<li class="list-group-item">${msg.userName} @ pos. ${msg.position}</li>`
+      // } else {
+      (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`;
+      // }
 
-      // not finished
       if (msg.position != undefined) {
-        const currPosition: number = msg.position;
-        let currUName: any = msg.userName;
-
-        for (let i = 0; i < 10; i++) {
-          if (i <= currPosition) {
-            (document.querySelector('.p' + (i)) as HTMLDivElement).classList.remove('d-none');
-          }
-          if (currPosition == i) {
-            ((document.querySelector('.p' + (i)) as HTMLDivElement).lastElementChild as HTMLSpanElement).innerHTML = currUName;
-          }
-        }
+        showOnlineUsers(msg.userList!, msg.position, msg.userName);
       }
 
       return;
@@ -236,6 +229,19 @@ const ready = () => {
     userId: userId!
   }
   ws.send(JSON.stringify(msg));
+}
+
+const showOnlineUsers = (userList: { position: number, userName: string }[], position: any, userName: any) => {
+  document.querySelectorAll('#profile').forEach(p => {
+    p.classList.add('d-none');
+  });
+  userList?.forEach(u => {
+    (document.querySelector('.p' + (u.position)) as HTMLDivElement).classList.remove('d-none');
+    ((document.querySelector('.p' + (u.position)) as HTMLDivElement).lastElementChild as HTMLSpanElement).innerHTML = u.userName;
+    if (position == u.position) {
+      ((document.querySelector('.p' + (u.position)) as HTMLDivElement).lastElementChild as HTMLSpanElement).innerHTML = userName;
+    }
+  });
 }
 
 (document.querySelector('#login') as HTMLButtonElement).addEventListener('click', (e) => {
