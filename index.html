@@ -11,7 +11,7 @@
 <body class="text-light">
 
   <!-- <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(90deg,rgba(0, 0, 0, 0) 40%, rgba(18, 16, 11, .69) 100%);"> -->
-  
+
   <div class="page-bg"></div>
   <div class="animation-wrapper">
     <div class="particle particle-1"></div>
@@ -35,7 +35,8 @@
       </div>
     </div>
   </nav>
-  <div class="container page-wrapper justify-content-center mx-auto col-xs-12 col-sm-12 col-md-10 col-lg-6 col-xl-6 col-xxl-3"
+  <div
+    class="container page-wrapper justify-content-center mx-auto col-xs-12 col-sm-12 col-md-10 col-lg-6 col-xl-6 col-xxl-3"
     id="loginContainer">
     <p class="display-6">Log in to play</p>
     <form>
@@ -97,21 +98,19 @@
 
       <div class="col-3 d-flex flex-column" style="height: 90vh;">
         <p class="my-2" id="table-count"></p>
-        <!-- <div style="height: 50%; overflow: hidden; display: flex; flex-direction: column;">
-          <div class="px-2" id="stream"></div>
-        </div> -->
 
         <div style="height: 50%; display: flex;" class="align-items-center d-flex mt-2" id="action-btnsMainDiv">
           <button class="btn btn-primary mx-auto align-bottom w-50" id="readyUp">Ready</button>
-          <input type="number" class="form-control poker-input w-25 me-2 d-none" placeholder="Bet amount/testing" step="1"
-            id="bet-amount">
+          <input type="number" class="form-control poker-input w-25 me-2 d-none" placeholder="Bet amount/testing"
+            step="1" id="bet-amount">
           <div class="w-75 d-none" id="action-btns"></div>
         </div>
 
         <div style="height: 50%; display: flex;" class="align-items-center d-flex mt-2" id="cardsDiv">
           <div class="w-100 d-none" id="cards">
-            <img src="src/images/♥/♥A.png" class="w-50 h-50" style="float: left; transform: rotate(-20deg); transform: translate(10%);" alt="">
-            <img src="src/images/♠/♠A.png" class="w-50 h-50" style="transform: rotate(20deg) translate(-10%);" alt="">
+            <img id="firstCard" src="src/images/♥/♥A.png" class="w-50 h-50"
+              style="float: left; transform: rotate(-20deg); transform: translate(10%);" alt="">
+            <img id="secondCard" src="src/images/♠/♠A.png" class="w-50 h-50" style="transform: rotate(20deg) translate(-10%);" alt="">
           </div>
         </div>
 
