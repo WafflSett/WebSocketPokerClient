@@ -10,5 +10,6 @@ export default interface IMessageProtocol {
     hand?: string[],
     pot?: number,
     runningBet?: number,
-    bet?: number
+    bet?: number,
+    inProgress?: boolean
 }

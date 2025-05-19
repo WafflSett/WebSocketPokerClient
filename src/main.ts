@@ -13,6 +13,7 @@ let position: number;
 let btnDiv = (document.querySelector('#action-btns') as HTMLDivElement);
 let betAmount: HTMLInputElement = (document.querySelector('#bet-amount') as HTMLInputElement);
 let myBet: number = 0;
+let timerOn = false;
 
 const connect = () => {
   ws = new WebSocket('ws://localhost:8081');
@@ -84,7 +85,7 @@ const connect = () => {
         }
       });
       if (msg.position == position) {
-
+        startTimer();
         (document.querySelector('#action-btnsMainDiv') as HTMLDivElement).classList.remove('d-none');
         if (msg.runningBet! > 0) {
           // match runningBet or raise runningBet by at least 2x the blind
@@ -106,12 +107,16 @@ const connect = () => {
             bet(msg.runningBet! - myBet);
             betAmount.classList.add('d-none');
             console.log('call');
+            timerOn = false;
+
           });
 
           raiseBtn.addEventListener('click', () => {
             bet(Number(betAmount.value!));
             betAmount.classList.add('d-none');
             console.log('raise');
+            timerOn = false;
+
           });
 
           btnDiv.appendChild(callBtn);
@@ -139,6 +144,7 @@ const connect = () => {
 
         foldBtn.addEventListener('click', () => {
           betAmount.classList.add('d-none');
+          timerOn = false;
           fold()
         });
       } else {
@@ -178,6 +184,21 @@ const bet = (amount: number, blind?: boolean) => {
     bet: amount
   }
   ws.send(JSON.stringify(msg));
+}
+
+const startTimer = async ()=>{
+  let timer = document.querySelector('#timer') as HTMLDivElement;
+  let timeLeft = 60;
+  timerOn = true;
+  let thisInterval = setInterval(() => {
+    if (timerOn && timeLeft>0) {
+      timeLeft--
+      timer.innerHTML = timeLeft.toString();
+    }else{
+      timer.innerHTML = "";
+      clearInterval(thisInterval);
+    }
+  }, 1000);
 }
 
 const disconnect = () => {
