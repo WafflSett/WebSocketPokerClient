@@ -10,8 +10,6 @@
 
 <body class="text-light">
 
-  <!-- <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(90deg,rgba(0, 0, 0, 0) 40%, rgba(18, 16, 11, .69) 100%);"> -->
-
   <div class="page-bg"></div>
   <div class="animation-wrapper">
     <div class="particle particle-1"></div>
@@ -19,6 +17,7 @@
     <div class="particle particle-3"></div>
     <div class="particle particle-4"></div>
   </div>
+
   <nav class="navbar navbar-expand-lg ">
     <div class="container-fluid">
       <a class="navbar-brand text-light" href="">Poker Client</a>
@@ -51,7 +50,7 @@
 
       <div class="col-9 d-flex justify-content-center align-items-center">
         <div class="table-container">
-          <img src="src/images/bg4.png" class="table-image" alt="table">
+          <img src="src/images/table.png" class="table-image" alt="table">
           <div id="profile" class="p0 d-none" style="position: absolute; height: 30%;">
             <img src="src/images/profilepicture.png" class="player" alt="">
             <span id="displayedUName">0</span>
@@ -98,18 +97,32 @@
       <div class="col-3 d-flex flex-column" style="height: 90vh;">
         <p class="my-2" id="table-count"></p>
 
-        <div style="height: 50%; display: flex;" class="align-items-center d-flex mt-2" id="action-btnsMainDiv">
-          <button class="btn btn-primary mx-auto align-bottom w-50" id="readyUp">Ready</button>
-          <input type="number" class="form-control poker-input w-25 me-2 d-none" placeholder="Bet amount/testing"
-            step="1" id="bet-amount">
-          <div class="w-75 d-none" id="action-btns"></div>
+        <div style="height: 40%; display: flex;" class="align-items-center d-flex mt-2" id="action-btnsMainDiv">
+          <button class="btn mx-auto align-bottom w-50" id="readyUp">Ready</button>
+          <div class="row h-100">
+            <div class="col-12 h-25 align-items-center d-flex" id="betField">
+              <input type="number" class="form-control w-50 me-1 d-none" placeholder="Bet amount/testing" step="1"
+                id="bet-amount">
+            </div>
+            <div class="col-12 h-75 d-flex align-items-center justify-content-center">
+              <div class="d-none w-50" id="action-btns"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height: 10%; display: flex;" class="align-items-center d-flex mt-2 w-100">
+          <div class="timerBarFull w-100">
+            <div id="timerBar" class="d-none"
+              style="height: 100%; background: gold; padding-left: 1rem; border-radius: 25px;">60s</div>
+          </div>
         </div>
 
         <div style="height: 50%; display: flex;" class="align-items-center d-flex mt-2" id="cardsDiv">
           <div class="w-100 d-none" id="cards">
             <img id="firstCard" src="src/images/♥/♥A.png" class="w-50 h-50"
               style="float: left; transform: rotate(-20deg); transform: translate(10%);" alt="">
-            <img id="secondCard" src="src/images/♠/♠A.png" class="w-50 h-50" style="transform: rotate(20deg) translate(-10%);" alt="">
+            <img id="secondCard" src="src/images/♠/♠A.png" class="w-50 h-50"
+              style="transform: rotate(20deg) translate(-10%);" alt="">
           </div>
         </div>
 

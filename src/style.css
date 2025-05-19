@@ -1,6 +1,7 @@
-html{
+html {
     overflow: hidden;
 }
+
 body {
 
     /* background: rgb(100, 0, 0) !important; */
@@ -16,7 +17,7 @@ body {
     height: 100%;
 }
 
-.navbar{
+.navbar {
     z-index: 2;
 }
 
@@ -62,7 +63,6 @@ body {
 .p0 {
     top: -11%;
     left: 0%;
-    /* filter: brightness(2); */ /* active player -> stream not needed */
 }
 
 .p1 {
@@ -165,14 +165,36 @@ img {
     pointer-events: none;
 }
 
-#readyUp {
-    background-color: #555;
-    border: gold 1px solid;
-    padding: 1rem;
+#readyUp,
+#call-btn,
+#raise-btn,
+#fold-btn,
+#allin-btn,
+#bet-btn,
+#check-btn,
+#bet-amount {
+    background-color: rgb(250, 220, 40);
     transition: .3s;
+    border-radius: 2em 1em 4em / 0.5em 3em;
 }
-#readyUp:hover {
-    background-color: #666;
+
+#readyUp:hover,
+#call-btn:hover,
+#raise-btn:hover,
+#fold-btn:hover,
+#allin-btn:hover,
+#bet-btn:hover,
+#check-btn:hover {
+    color: black;
     transition: .3s;
-    border: rgb(255, 229, 80) 1px solid;
+    letter-spacing: .5rem;
+    background-color: rgb(250, 220, 100);
+}
+
+#bet-amount,
+#bet-amount:hover,
+#bet-amount:target,
+#bet-amount:focus {
+    border: none;
+    box-shadow: none;
 }

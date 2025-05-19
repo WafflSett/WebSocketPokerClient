@@ -91,17 +91,24 @@ const connect = () => {
           // match runningBet or raise runningBet by at least 2x the blind
 
           const callBtn = document.createElement('button');
-          callBtn.className = "btn btn-warning w-100 me-2";
+          callBtn.className = 'btn w-100 my-1 me-2';
           callBtn.id = "call-btn";
           callBtn.textContent = "Call";
 
           const raiseBtn = document.createElement('button');
-          raiseBtn.className = 'btn btn-secondary w-100 me-2';
+          raiseBtn.className = 'btn w-100 my-1 me-2';
           raiseBtn.id = 'raise-btn';
           raiseBtn.textContent = 'Raise';
 
           betAmount.min = String(msg.runningBet);
           betAmount.value = String(msg.runningBet);
+
+          const allinBTN = document.createElement('button');
+          allinBTN.className = 'btn w-50 my-1 ms-1';
+          allinBTN.id = 'allin-btn';
+          allinBTN.textContent = 'All In';
+          // TODO -- alllinBtn eventlistener -- player balance required
+          (document.querySelector('#betField') as HTMLDivElement).append(allinBTN);
 
           callBtn.addEventListener('click', () => {
             bet(msg.runningBet! - myBet);
@@ -124,20 +131,20 @@ const connect = () => {
         } else {
           // set new runningBet or pass
           const betBtn = document.createElement('button');
-          betBtn.className = 'btn btn-success w-100 me-2';
+          betBtn.className = 'btn w-100 my-1 me-2';
           betBtn.id = 'bet-btn';
           betBtn.textContent = 'Bet';
           btnDiv.append(betBtn);
 
           const checkBtn = document.createElement('button');
-          checkBtn.className = 'btn btn-primary w-100 me-2';
+          checkBtn.className = 'btn w-100 my-1 me-2';
           checkBtn.id = 'check-btn';
           checkBtn.textContent = 'Check';
           btnDiv.append(checkBtn);
         }
         betAmount.classList.remove('d-none');
         const foldBtn = document.createElement('button');
-        foldBtn.className = 'btn btn-danger w-100 me-2';
+        foldBtn.className = 'btn w-100 my-1 me-2';
         foldBtn.id = 'fold-btn';
         foldBtn.textContent = 'Fold';
         btnDiv.append(foldBtn);
@@ -186,16 +193,23 @@ const bet = (amount: number, blind?: boolean) => {
   ws.send(JSON.stringify(msg));
 }
 
-const startTimer = async ()=>{
-  let timer = document.querySelector('#timer') as HTMLDivElement;
+const startTimer = async () => {
+  let timer = document.querySelector('#timerBar') as HTMLDivElement;
   let timeLeft = 60;
+  timer.classList.remove('d-none');
   timerOn = true;
   let thisInterval = setInterval(() => {
-    if (timerOn && timeLeft>0) {
-      timeLeft--
-      timer.innerHTML = timeLeft.toString();
-    }else{
+    if (timerOn && timeLeft > 0) {
+      timeLeft--;
+      timer.innerText = `${timeLeft.toString()}s`;
+      timer.style.width = `${timeLeft / 60 * 100}%`;
+      if (timeLeft <= 10) {
+        if (timeLeft % 2 == 0) timer.style.background = "red";
+        else timer.style.background = "gold";
+      }
+    } else {
       timer.innerHTML = "";
+      timer.classList.add('d-none');
       clearInterval(thisInterval);
     }
   }, 1000);
