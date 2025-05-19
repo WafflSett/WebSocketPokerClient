@@ -1,4 +1,5 @@
 import './style.css'
+import './background.scss'
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import IMessageProtocol from './IMessageProtocol';
 

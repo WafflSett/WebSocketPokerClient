@@ -8,11 +8,11 @@ body {
     /* background-repeat: no-repeat; */
 
     /* test */
-    background: url(images/toEdit.png);
-    background-size: cover;
+    /* background: url(images/toEdit.png); */
+    /* background-size: cover;
     background-position: center;
 
-    background-attachment: fixed;
+    background-attachment: fixed; */
     height: 100%;
 }
 
@@ -27,6 +27,10 @@ body {
     filter: blur(10px);
     z-index: -1;
 } */
+
+.navbar{
+    z-index: 2;
+}
 
 #loginContainer {
     margin-top: 10rem;
