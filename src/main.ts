@@ -51,7 +51,6 @@ const connect = () => {
       // } else {
       (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`;
       // }
-
       showOnlineUsers(msg.userList!, msg.position, msg.userName);
 
       return;
@@ -67,16 +66,20 @@ const connect = () => {
       if ((msg.userList!.length > 2 && msg.dealer! + 1 == position) || (msg.userList!.length < 3 && msg.dealer == position)) {
         bet(msg.bet! / 2, true);
         myBet = msg.bet! / 2;
+        (document.querySelector('.p' + (position)) as HTMLDivElement).children[2].innerHTML = myBet.toString();
       } else if ((msg.userList!.length > 2 && msg.dealer! + 2 == position) || (msg.userList!.length < 3 && msg.dealer! + 1 == position)) {
         bet(msg.bet!, true);
         myBet = msg.bet!;
+        // TODO - be kell írni
+        // dealer pozíciót máshogy kell számolni
       }
       return;
     }
     if (msg.type == 'upnext') {
       btnDiv.classList.remove('d-none');
       btnDiv.innerHTML = '';
-      document.querySelectorAll('#profile').forEach(pX => {
+      showBets(msg.userList!);
+      document.querySelectorAll('.profile').forEach(pX => {
         let idPos: string = pX.className
         if (Number(idPos[1]) == msg.position) {
           (pX as HTMLImageElement).style.filter = 'brightness(1.5)';
@@ -108,6 +111,10 @@ const connect = () => {
           allinBTN.id = 'allin-btn';
           allinBTN.textContent = 'All In';
           // TODO -- alllinBtn eventlistener -- player balance required
+          let prevAllIn = (document.querySelector('#allin-btn') as HTMLDivElement);
+          if (prevAllIn != null) {
+            prevAllIn.remove();
+          }
           (document.querySelector('#betField') as HTMLDivElement).append(allinBTN);
 
           callBtn.addEventListener('click', () => {
@@ -123,7 +130,6 @@ const connect = () => {
             betAmount.classList.add('d-none');
             console.log('raise');
             timerOn = false;
-
           });
 
           btnDiv.appendChild(callBtn);
@@ -174,6 +180,16 @@ const connect = () => {
   }
 }
 
+const showBets = (userList:{userId:number, userName:string, position:number, bet:number}[])=>{
+  userList?.forEach(u => {
+    let pX = (document.querySelector('.p' + (u.position)) as HTMLDivElement);
+    (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
+    if (position == u.position) {
+      (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
+    }
+  });
+}
+
 const fold = () => {
   const msg: IMessageProtocol = {
     type: 'fold',
@@ -199,7 +215,7 @@ const startTimer = async () => {
   timer.classList.remove('d-none');
   timerOn = true;
   let thisInterval = setInterval(() => {
-    if (timerOn && timeLeft > 0) {
+    if (timerOn && timeLeft > 1) {
       timeLeft--;
       timer.innerText = `${timeLeft.toString()}s`;
       timer.style.width = `${timeLeft / 60 * 100}%`;
@@ -208,6 +224,9 @@ const startTimer = async () => {
         else timer.style.background = "gold";
       }
     } else {
+      if (timeLeft < 2) {
+        fold();
+      }
       timer.innerHTML = "";
       timer.classList.add('d-none');
       clearInterval(thisInterval);
@@ -227,7 +246,7 @@ const disconnect = () => {
     console.log('Disconnected from server');
 
   };
-
+  timerOn = false;
 
   (document.querySelector('.p' + (msg.userId - 1)) as HTMLDivElement).classList.add('d-none');
   (document.querySelector('#table') as HTMLDivElement).classList.add('d-none');
@@ -251,9 +270,9 @@ const showOnlineUsers = (userList: { position: number, userName: string }[], pos
   userList?.forEach(u => {
     let pX = (document.querySelector('.p' + (u.position)) as HTMLDivElement);
     pX.classList.remove('d-none');
-    (pX.lastElementChild as HTMLSpanElement).innerHTML = u.userName;
+    (pX.children[1] as HTMLSpanElement).innerHTML = u.userName;
     if (position == u.position) {
-      (pX.lastElementChild as HTMLSpanElement).innerHTML = userName;
+      (pX.children[1] as HTMLSpanElement).innerHTML = userName;
     }
   });
 }

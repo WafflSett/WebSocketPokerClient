@@ -39,7 +39,7 @@ body {
     display: block;
 }
 
-#displayedUName {
+.displayedUName {
     position: absolute;
     left: 50%;
     top: 50%;
