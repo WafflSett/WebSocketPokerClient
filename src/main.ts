@@ -56,7 +56,7 @@ const connect = () => {
       return;
     }
     if (msg.type == 'disc') {
-      (document.querySelector('.p' + msg.position) as HTMLDivElement).classList.add("d-none");
+      (document.querySelector('#p' + msg.position) as HTMLDivElement).classList.add("d-none");
       return;
     }
     if (msg.type == 'ready') {
@@ -66,7 +66,7 @@ const connect = () => {
       if ((msg.userList!.length > 2 && msg.dealer! + 1 == position) || (msg.userList!.length < 3 && msg.dealer == position)) {
         bet(msg.bet! / 2, true);
         myBet = msg.bet! / 2;
-        (document.querySelector('.p' + (position)) as HTMLDivElement).children[2].innerHTML = myBet.toString();
+        (document.querySelector('#p' + (position)) as HTMLDivElement).children[2].innerHTML = myBet.toString();
       } else if ((msg.userList!.length > 2 && msg.dealer! + 2 == position) || (msg.userList!.length < 3 && msg.dealer! + 1 == position)) {
         bet(msg.bet!, true);
         myBet = msg.bet!;
@@ -79,12 +79,12 @@ const connect = () => {
       btnDiv.classList.remove('d-none');
       btnDiv.innerHTML = '';
       showBets(msg.userList!);
-      document.querySelectorAll('.profile').forEach(pX => {
-        let idPos: string = pX.className
+      document.querySelectorAll('.playerPicture').forEach(pX => {
+        let idPos: string = pX.parentElement!.id;
         if (Number(idPos[1]) == msg.position) {
-          (pX as HTMLImageElement).style.filter = 'brightness(1.5)';
-        } else {
           (pX as HTMLImageElement).style.filter = 'brightness(1)';
+        } else {
+          (pX as HTMLImageElement).style.filter = 'brightness(.45)';
         }
       });
       if (msg.position == position) {
@@ -94,7 +94,7 @@ const connect = () => {
           // match runningBet or raise runningBet by at least 2x the blind
 
           const callBtn = document.createElement('button');
-          callBtn.className = 'btn w-100 my-1 me-2';
+          callBtn.className = 'btn w-50 my-1 ms-1';
           callBtn.id = "call-btn";
           callBtn.textContent = "Call";
 
@@ -107,22 +107,20 @@ const connect = () => {
           betAmount.value = String(msg.runningBet);
 
           const allinBTN = document.createElement('button');
-          allinBTN.className = 'btn w-50 my-1 ms-1';
+          allinBTN.className = 'btn w-100 my-1 me-2';
           allinBTN.id = 'allin-btn';
           allinBTN.textContent = 'All In';
           // TODO -- alllinBtn eventlistener -- player balance required
-          let prevAllIn = (document.querySelector('#allin-btn') as HTMLDivElement);
-          if (prevAllIn != null) {
-            prevAllIn.remove();
+          let prevCall = (document.querySelector('#call-btn') as HTMLDivElement);
+          if (prevCall != null) {
+            prevCall.remove();
           }
-          (document.querySelector('#betField') as HTMLDivElement).append(allinBTN);
 
           callBtn.addEventListener('click', () => {
             bet(msg.runningBet! - myBet);
             betAmount.classList.add('d-none');
             console.log('call');
             timerOn = false;
-
           });
 
           raiseBtn.addEventListener('click', () => {
@@ -132,7 +130,8 @@ const connect = () => {
             timerOn = false;
           });
 
-          btnDiv.appendChild(callBtn);
+          btnDiv.appendChild(allinBTN);
+          (document.querySelector('#betField') as HTMLDivElement).append(callBtn);
           btnDiv.appendChild(raiseBtn);
         } else {
           // set new runningBet or pass
@@ -171,7 +170,28 @@ const connect = () => {
       const secondCard: string = msg.hand![1];
       (document.querySelector('#firstCard') as HTMLImageElement).src = `src/images/${firstCard[0]}/${firstCard}.png`;
       (document.querySelector('#secondCard') as HTMLImageElement).src = `src/images/${secondCard[0]}/${secondCard}.png`;
-      console.log(msg.hand);
+      // console.log(msg.hand);
+    }
+
+    if (msg.type == 'roundend') {
+      let communityCards = document.querySelector('#communityCards') as HTMLDivElement;
+      communityCards!.innerHTML = "";
+      console.log(msg);
+      msg.hand!.forEach(c => {
+        let card = document.createElement('img');
+        card.src = `src/images/${c[0]}/${c}.png`;
+        card.style.float = 'left';
+        if (msg.hand!.length == 3) {
+          card.style.width = `${(100 / 3).toString()}%`;
+        } else if (msg.hand!.length == 4) {
+          card.style.width = `${(100 / 4).toString()}%`;
+          communityCards!.style.width = '60%';
+        } else {
+          card.style.width = `${(100 / 5).toString()}%`;
+          communityCards!.style.width = '70%';
+        }
+        communityCards!.append(card);
+      });
     }
   }
 
@@ -180,9 +200,9 @@ const connect = () => {
   }
 }
 
-const showBets = (userList:{userId:number, userName:string, position:number, bet:number}[])=>{
+const showBets = (userList: { userId: number, userName: string, position: number, bet: number }[]) => {
   userList?.forEach(u => {
-    let pX = (document.querySelector('.p' + (u.position)) as HTMLDivElement);
+    let pX = (document.querySelector('#p' + (u.position)) as HTMLDivElement);
     (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
     if (position == u.position) {
       (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
@@ -248,7 +268,7 @@ const disconnect = () => {
   };
   timerOn = false;
 
-  (document.querySelector('.p' + (msg.userId - 1)) as HTMLDivElement).classList.add('d-none');
+  (document.querySelector('#p' + (msg.userId - 1)) as HTMLDivElement).classList.add('d-none');
   (document.querySelector('#table') as HTMLDivElement).classList.add('d-none');
   (document.querySelector('#navForm') as HTMLInputElement).classList.add('d-none');
   (document.querySelector('#loginContainer') as HTMLDivElement).classList.remove('d-none');
@@ -264,11 +284,11 @@ const ready = () => {
 }
 
 const showOnlineUsers = (userList: { position: number, userName: string }[], position: any, userName: any) => {
-  document.querySelectorAll('#profile').forEach(p => {
+  document.querySelectorAll('.profile').forEach(p => {
     p.classList.add('d-none');
   });
   userList?.forEach(u => {
-    let pX = (document.querySelector('.p' + (u.position)) as HTMLDivElement);
+    let pX = (document.querySelector('#p' + (u.position)) as HTMLDivElement);
     pX.classList.remove('d-none');
     (pX.children[1] as HTMLSpanElement).innerHTML = u.userName;
     if (position == u.position) {
@@ -276,6 +296,33 @@ const showOnlineUsers = (userList: { position: number, userName: string }[], pos
     }
   });
 }
+
+const createProfiles = () => {
+  let tableContainer = document.querySelector('.table-container')
+  for (let i = 0; i < 10; i++) {
+    let div = document.createElement('div');
+    div.id = `p${i}`;
+    div.className = 'profile d-none'
+
+    let img = document.createElement('img');
+    img.className = img.alt = 'playerPicture';
+    img.src = 'src/images/profilepicture.png';
+
+    let spanName = document.createElement('span');
+    spanName.className = 'displayedUName';
+    spanName.innerHTML = i.toString();
+
+    let spanBet = document.createElement('span');
+    spanBet.className = 'betAmount';
+
+    div.append(img);
+    div.append(spanName);
+    div.append(spanBet);
+
+    tableContainer?.append(div);
+  }
+}
+createProfiles();
 
 (document.querySelector('#login') as HTMLButtonElement).addEventListener('click', (e) => {
   e.preventDefault()

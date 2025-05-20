@@ -51,71 +51,24 @@
       <div class="col-9 d-flex justify-content-center align-items-center">
         <div class="table-container">
           <img src="src/images/table.png" class="table-image" alt="table">
-          <div class="profile p0 d-none" style="position: absolute; height: 30%;">
-            <img src="src/images/profilepicture.png" class="player" alt="">
-            <span class="displayedUName">0</span>
-            <span class="betAmount"></span>
-          </div>
-          <div class="profile p1 d-none" style="position: absolute; height: 30%;">
-            <img src="src/images/profilepicture.png" class="player" alt="">
-            <span class="displayedUName">1</span>
-            <span class="betAmount"></span>
-          </div>
-          <div class="profile p2 d-none" style="position: absolute; height: 30%;">
-            <img src="src/images/profilepicture.png" class="player" alt="">
-            <span class="displayedUName">2</span>
-            <span class="betAmount"></span>
-          </div>
-          <div class="profile p3 d-none" style="position: absolute; height: 30%;">
-            <img src="src/images/profilepicture.png" class="player" alt="">
-            <span class="displayedUName">3</span>
-            <span class="betAmount"></span>
-          </div>
-          <div class="profile p4 d-none" style="position: absolute; height: 30%;">
-            <img src="src/images/profilepicture.png" class="player" alt="">
-            <span class="displayedUName">4</span>
-            <span class="betAmount"></span>
-          </div>
-          <div class="profile p5 d-none" style="position: absolute; height: 30%;">
-            <img src="src/images/profilepicture.png" class="player" alt="">
-            <span class="displayedUName">5</span>
-            <span class="betAmount"></span>
-          </div>
-          <div class="profile p6 d-none" style="position: absolute; height: 30%;">
-            <img src="src/images/profilepicture.png" class="player" alt="">
-            <span class="displayedUName">6</span>
-            <span class="betAmount"></span>
-          </div>
-          <div class="profile p7 d-none" style="position: absolute; height: 30%;">
-            <img src="src/images/profilepicture.png" class="player" alt="">
-            <span class="displayedUName">7</span>
-            <span class="betAmount"></span>
-          </div>
-          <div class="profile p8 d-none" style="position: absolute; height: 30%;">
-            <img src="src/images/profilepicture.png" class="player" alt="">
-            <span class="displayedUName">8</span>
-            <span class="betAmount"></span>
-          </div>
-          <div class="profile p9 d-none" style="position: absolute; height: 30%;">
-            <img src="src/images/profilepicture.png" class="player" alt="">
-            <span class="displayedUName">9</span>
-            <span class="betAmount"></span>
-          </div>
+
+
+          <div id="communityCards"></div>
         </div>
       </div>
 
       <div class="col-3 d-flex flex-column" style="height: 90vh;">
         <p class="my-2" id="table-count"></p>
 
-        <div style="height: 40%; display: flex;" class="align-items-center d-flex mt-2" id="action-btnsMainDiv">
+        <div style="height: 40%; display: flex;" class="align-items-center w-100 d-flex mt-2" id="action-btnsMainDiv">
           <button class="btn mx-auto align-bottom w-50" id="readyUp">Ready</button>
-          <div class="row h-100">
-            <div class="col-12 h-25 align-items-center d-flex" id="betField">
+          <div class="row h-100 w-100">
+            <div class="col-12 h-25 w-100 align-items-center d-flex" id="betField">
               <input type="number" class="form-control w-50 me-1 d-none" placeholder="Bet amount/testing" step="1"
                 id="bet-amount">
             </div>
             <div class="col-12 h-75 d-flex align-items-center justify-content-center">
-              <div class="d-none w-50" id="action-btns"></div>
+              <div class="d-none w-100" id="action-btns"></div>
             </div>
           </div>
         </div>
