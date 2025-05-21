@@ -6,10 +6,10 @@ import IMessageProtocol from './IMessageProtocol';
 let ws: WebSocket;
 let userId: number;
 let userName: string;
-// let stream = document.querySelector('#stream');
 // let users : {userId:number, userName:string}[] = [];
 let tableId: number;
 let position: number;
+let waitingMessage = document.querySelector('#waitingMessage') as HTMLParagraphElement;
 let btnDiv = (document.querySelector('#action-btns') as HTMLDivElement);
 let betAmount: HTMLInputElement = (document.querySelector('#bet-amount') as HTMLInputElement);
 let myBet: number = 0;
@@ -31,7 +31,6 @@ const connect = () => {
     ws.send(JSON.stringify(msg));
 
 
-    (document.querySelector('#table') as HTMLDivElement).classList.remove('d-none');
     (document.querySelector('#navForm') as HTMLInputElement).classList.remove('d-none');
     (document.querySelector('#username') as HTMLInputElement).innerHTML = userName;
     (document.querySelector('#loginContainer') as HTMLDivElement).classList.add('d-none');
@@ -47,12 +46,9 @@ const connect = () => {
       return;
     }
     if (msg.type == 'join') {
-      // if (userId! != msg.userId) {
-      // } else {
+      (document.querySelector('#table') as HTMLDivElement).classList.remove('d-none');
       (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`;
-      // }
       showOnlineUsers(msg.userList!, msg.position, msg.userName);
-
       return;
     }
     if (msg.type == 'disc') {
@@ -170,7 +166,6 @@ const connect = () => {
       const secondCard: string = msg.hand![1];
       (document.querySelector('#firstCard') as HTMLImageElement).src = `src/images/${firstCard[0]}/${firstCard}.png`;
       (document.querySelector('#secondCard') as HTMLImageElement).src = `src/images/${secondCard[0]}/${secondCard}.png`;
-      // console.log(msg.hand);
     }
 
     if (msg.type == 'roundend') {
@@ -274,7 +269,6 @@ const disconnect = () => {
   (document.querySelector('#loginContainer') as HTMLDivElement).classList.remove('d-none');
 }
 
-
 const ready = () => {
   const msg: IMessageProtocol = {
     type: 'ready',
@@ -310,7 +304,6 @@ const createProfiles = () => {
 
     let spanName = document.createElement('span');
     spanName.className = 'displayedUName';
-    spanName.innerHTML = i.toString();
 
     let spanBet = document.createElement('span');
     spanBet.className = 'betAmount';

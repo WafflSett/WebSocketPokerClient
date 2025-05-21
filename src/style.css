@@ -3,17 +3,6 @@ html {
 }
 
 body {
-
-    /* background: rgb(100, 0, 0) !important; */
-    /* background: rgb(0, 100, 0) !important; */
-    /* background-repeat: no-repeat; */
-
-    /* test */
-    /* background: url(images/toEdit.png); */
-    /* background-size: cover;
-    background-position: center;
-
-    background-attachment: fixed; */
     height: 100%;
 }
 
@@ -21,11 +10,15 @@ body {
     z-index: 2;
 }
 
-#loginContainer {
+#loginContainer,
+#waitingMessages {
     margin-top: 10rem;
     background: rgba(18, 16, 11, .69);
     padding: 1rem;
     border-radius: 25px;
+}
+#waitingMessages{
+    margin-top: 20rem;
 }
 
 /* table */
@@ -48,7 +41,6 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
-    /* background: rgba(150, 90, 90, 0.8); */
     font-size: 1.3rem;
     border-radius: 25px;
     font-weight: bold;

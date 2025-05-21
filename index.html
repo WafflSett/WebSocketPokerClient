@@ -35,7 +35,7 @@
     </div>
   </nav>
   <div
-    class="container page-wrapper justify-content-center mx-auto col-xs-12 col-sm-12 col-md-10 col-lg-6 col-xl-6 col-xxl-3"
+    class="container justify-content-center mx-auto col-xs-12 col-sm-12 col-md-10 col-lg-6 col-xl-6 col-xxl-3"
     id="loginContainer">
     <p class="display-6">Log in to play</p>
     <form>
@@ -45,6 +45,13 @@
       <button type="button" class="button nav-link col-auto d-inline-block mt-5" id="login">Login</button>
     </form>
   </div>
+
+  <div
+    class="d-none container align-items-center justify-content-center mx-auto col-xs-12 col-sm-12 col-md-10 col-lg-6 col-xl-6 col-xxl-3"
+    id="waitingMessages">
+    <span id="waitingMessage" class="display-6"></span>
+  </div>
+
   <div class="container-fluid" id="main">
     <div class="row w-100 my-2 d-none" id="table" style="height: 90vh;">
 
@@ -61,8 +68,9 @@
         <p class="my-2" id="table-count"></p>
 
         <div style="height: 40%; display: flex;" class="align-items-center w-100 d-flex mt-2" id="action-btnsMainDiv">
-          <button class="btn mx-auto align-bottom w-50" id="readyUp">Ready</button>
-          <div class="row h-100 w-100">
+          <button class="btn mx-auto align-bottom w-25" id="readyUp">Ready</button>
+          <p class="w-75 text-center my-auto" id="waitingForReady"></p>
+          <div class="row h-100 w-100 d-none">
             <div class="col-12 h-25 w-100 align-items-center d-flex" id="betField">
               <input type="number" class="form-control w-50 me-1 d-none" placeholder="Bet amount/testing" step="1"
                 id="bet-amount">
