@@ -3,7 +3,7 @@ import './background.scss'
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import IMessageProtocol from './IMessageProtocol';
 
-let ws: WebSocket;
+let ws: WebSocket | null;
 let userId: number;
 let userName: string;
 // let users : {userId:number, userName:string}[] = [];
@@ -28,7 +28,7 @@ const connect = () => {
       userName: userName,
       text: ''
     }
-    ws.send(JSON.stringify(msg));
+    ws!.send(JSON.stringify(msg));
 
 
     (document.querySelector('#navForm') as HTMLInputElement).classList.remove('d-none');
@@ -202,7 +202,9 @@ const connect = () => {
         }
         communityCards!.append(card);
       });
-      
+      timerOn = false;
+      //reset timer
+      //clear buttons
     }
   }
 
@@ -227,7 +229,7 @@ const fold = () => {
     userId: userId!,
     userName: userName
   }
-  ws.send(JSON.stringify(msg));
+  ws!.send(JSON.stringify(msg));
 }
 
 const check = () => {
@@ -236,7 +238,7 @@ const check = () => {
     userId: userId!,
     userName: userName
   }
-  ws.send(JSON.stringify(msg));
+  ws!.send(JSON.stringify(msg));
 }
 
 const bet = (amount: number, blind?: boolean) => {
@@ -246,19 +248,20 @@ const bet = (amount: number, blind?: boolean) => {
     userName: userName,
     bet: amount
   }
-  ws.send(JSON.stringify(msg));
+  ws!.send(JSON.stringify(msg));
 }
 
 const startTimer = async () => {
   let timer = document.querySelector('#timerBar') as HTMLDivElement;
-  let timeLeft = 60;
+  timer.style.transition = '1s';
+  let timeLeft = 120;
   timer.classList.remove('d-none');
   timerOn = true;
   let thisInterval = setInterval(() => {
     if (timerOn && timeLeft > 1) {
       timeLeft--;
-      timer.innerText = `${timeLeft.toString()}s`;
-      timer.style.width = `${timeLeft / 60 * 100}%`;
+      timer.innerText = `${Math.round(timeLeft/2).toString()}s`;
+      timer.style.width = `${(timeLeft / 120 * 90) + 10}%`;
       if (timeLeft <= 10) {
         if (timeLeft % 2 == 0) timer.style.background = "red";
         else timer.style.background = "gold";
@@ -271,27 +274,29 @@ const startTimer = async () => {
       timer.classList.add('d-none');
       clearInterval(thisInterval);
     }
-  }, 1000);
+  }, 500);
 }
 
 const disconnect = () => {
-  const msg: IMessageProtocol = {
-    type: 'disc',
-    userId: userId!,
-    userName: userName,
-    position: position
-  }
-  ws.send(JSON.stringify(msg));
-  ws.close = () => {
+  if (ws != null) {
+    console.log(ws);
+    
+    const msg: IMessageProtocol = {
+      type: 'disc',
+      userId: userId!,
+      userName: userName,
+      position: position
+    }
+    ws!.send(JSON.stringify(msg));
     console.log('Disconnected from server');
-
-  };
-  timerOn = false;
-
-  (document.querySelector('#p' + (msg.userId - 1)) as HTMLDivElement).classList.add('d-none');
-  (document.querySelector('#table') as HTMLDivElement).classList.add('d-none');
-  (document.querySelector('#navForm') as HTMLInputElement).classList.add('d-none');
-  (document.querySelector('#loginContainer') as HTMLDivElement).classList.remove('d-none');
+    ws = null;
+    timerOn = false;
+    
+    (document.querySelector('#p' + (msg.userId - 1)) as HTMLDivElement).classList.add('d-none');
+    (document.querySelector('#table') as HTMLDivElement).classList.add('d-none');
+    (document.querySelector('#navForm') as HTMLInputElement).classList.add('d-none');
+    (document.querySelector('#loginContainer') as HTMLDivElement).classList.remove('d-none');
+  }
 }
 
 const ready = () => {
@@ -299,7 +304,7 @@ const ready = () => {
     type: 'ready',
     userId: userId!
   }
-  ws.send(JSON.stringify(msg));
+  ws!.send(JSON.stringify(msg));
 }
 
 const showOnlineUsers = (userList: { position: number, userName: string }[], position: any, userName: any) => {
@@ -368,15 +373,17 @@ const smallWindow = () => {
   let main = document.querySelector('#main') as HTMLDivElement;
   let windowSizeAlert = document.querySelector('#windowSizeAlert') as HTMLDivElement;
   if ((window.innerWidth < 1600 || window.outerWidth < 1600) || (window.innerHeight < 800 || window.outerHeight < 800)) {
-    // if (ws != null) {
-    //   disconnect();
-    // }
+    if (ws != null) {
+      disconnect();
+    }
     waiting.classList.add('d-none');
     main.classList.add('d-none');
     windowSizeAlert.classList.remove('d-none');
     (document.querySelector('#loginContainer') as HTMLDivElement).classList.add('d-none');
   } else {
-    login.classList.remove('d-none');
+    if (ws == null) {
+      login.classList.remove('d-none');
+    }
     windowSizeAlert.classList.add('d-none');
   }
 }
