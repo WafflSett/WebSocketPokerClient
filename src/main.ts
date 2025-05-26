@@ -47,6 +47,7 @@ const connect = () => {
     }
     if (msg.type == 'join') {
       (document.querySelector('#table') as HTMLDivElement).classList.remove('d-none');
+      (document.querySelector('#main') as HTMLDivElement).classList.remove('d-none');
       (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`;
       showOnlineUsers(msg.userList!, msg.position, msg.userName);
       return;
@@ -331,7 +332,7 @@ const createProfiles = () => {
 
     let spanBet = document.createElement('span');
     spanBet.className = 'betAmount';
-    spanBet.id = `betAmount${i}`
+    spanBet.id = `betAmount${i}`;
 
     div.append(img);
     div.append(spanName);
@@ -361,23 +362,31 @@ createProfiles();
   disconnect();
 });
 
-// const send = ()=>{
-//   const msg : IMessageProtocol = {
-//     type:'text',
-//     userId:userId!,
-//     userName:userName,
-//     text:(document.querySelector('#message') as HTMLInputElement).value
-//   }
-//   ws.send(JSON.stringify(msg));
-// }
-// (document.querySelector('#send') as HTMLButtonElement).addEventListener('click', (e)=>{
-//   e.preventDefault();
-//   let text = (document.querySelector('#message') as HTMLInputElement);
-//   if (text.value != "") {
-//     send();
-//   }
-//   text.value = "";
-// });
+const smallWindow = () => {
+  let login = document.querySelector('#loginContainer') as HTMLDivElement;
+  let waiting = document.querySelector('#waitingMessages') as HTMLDivElement;
+  let main = document.querySelector('#main') as HTMLDivElement;
+  let windowSizeAlert = document.querySelector('#windowSizeAlert') as HTMLDivElement;
+  if ((window.innerWidth < 1600 || window.outerWidth < 1600) || (window.innerHeight < 800 || window.outerHeight < 800)) {
+    // if (ws != null) {
+    //   disconnect();
+    // }
+    waiting.classList.add('d-none');
+    main.classList.add('d-none');
+    windowSizeAlert.classList.remove('d-none');
+    (document.querySelector('#loginContainer') as HTMLDivElement).classList.add('d-none');
+  } else {
+    login.classList.remove('d-none');
+    windowSizeAlert.classList.add('d-none');
+  }
+}
+smallWindow();
+window.onresize = () => {
+  smallWindow()
+}
+window.addEventListener("fullscreenchange", () => {
+  smallWindow();
+})
 
 window.onbeforeunload = function (e) {
   if (ws != null) {

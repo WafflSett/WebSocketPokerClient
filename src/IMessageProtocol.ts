@@ -3,7 +3,7 @@ export default interface IMessageProtocol {
     userId: number,
     userName?: string,
     text?: string,
-    userList?: { userId: number, userName: string, position: number, bet:number }[],
+    userList?: { userId: number, userName: string, position: number, bet: number, isPlaying: boolean }[],
     tableId?: number,
     position?: number,
     dealer?: number,
@@ -12,7 +12,7 @@ export default interface IMessageProtocol {
     runningBet?: number,
     bet?: number,
     inProgress?: boolean,
-    balance? : number,
+    balance?: number,
     ready?: number,
     sBlind?: number,
     bBlind?: number
