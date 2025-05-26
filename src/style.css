@@ -11,7 +11,8 @@ body {
 }
 
 #loginContainer,
-#waitingMessages {
+#waitingMessages,
+#windowSizeAlert {
     margin-top: 10rem;
     background: rgba(18, 16, 11, .69);
     padding: 1rem;

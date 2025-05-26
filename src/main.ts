@@ -47,6 +47,7 @@ const connect = () => {
     }
     if (msg.type == 'join') {
       (document.querySelector('#table') as HTMLDivElement).classList.remove('d-none');
+      (document.querySelector('#main') as HTMLDivElement).classList.remove('d-none');
       (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`;
       showOnlineUsers(msg.userList!, msg.position, msg.userName);
       return;
@@ -58,23 +59,29 @@ const connect = () => {
     if (msg.type == 'ready') {
       document.querySelectorAll('#readyUp').forEach((btn: any) => {
         btn.classList.add('d-none');
-      })
-      if ((msg.userList!.length > 2 && msg.dealer! + 1 == position) || (msg.userList!.length < 3 && msg.dealer == position)) {
+      });
+
+      let activeUsers: any = msg.userList!.filter(x => x.isPlaying == true);
+
+      if ((activeUsers!.length > 2 && msg.dealer! + 1 == position) || (activeUsers!.length < 3 && msg.dealer == position)) {
         bet(msg.bet! / 2, true);
         myBet = msg.bet! / 2;
-        (document.querySelector('#p' + (position)) as HTMLDivElement).children[2].innerHTML = myBet.toString();
-      } else if ((msg.userList!.length > 2 && msg.dealer! + 2 == position) || (msg.userList!.length < 3 && msg.dealer! + 1 == position)) {
+
+        (document.querySelector('#betAmount' + (position)) as HTMLSpanElement).innerHTML = myBet.toString();
+        console.log(myBet);
+
+      } else if ((activeUsers!.length > 2 && msg.dealer! + 2 == position) || (activeUsers!.length < 3 && msg.dealer! + 1 == position)) {
         bet(msg.bet!, true);
         myBet = msg.bet!;
-        // TODO - be kell írni
-        // dealer pozíciót máshogy kell számolni
+        (document.querySelector('#betAmount' + (position)) as HTMLSpanElement).innerHTML = myBet.toString();
+        console.log(myBet);
       }
       return;
     }
     if (msg.type == 'upnext') {
       btnDiv.classList.remove('d-none');
       btnDiv.innerHTML = '';
-      showBets(msg.userList!);
+      // showBets(msg.userList!);
       document.querySelectorAll('.playerPicture').forEach(pX => {
         let idPos: string = pX.parentElement!.id;
         if (Number(idPos[1]) == msg.position) {
@@ -195,15 +202,15 @@ const connect = () => {
   }
 }
 
-const showBets = (userList: { userId: number, userName: string, position: number, bet: number }[]) => {
-  userList?.forEach(u => {
-    let pX = (document.querySelector('#p' + (u.position)) as HTMLDivElement);
-    (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
-    if (position == u.position) {
-      (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
-    }
-  });
-}
+// const showBets = (userList: { userId: number, userName: string, position: number, bet: number }[]) => {
+//   userList?.forEach(u => {
+//     let pX = (document.querySelector('#p' + (u.position)) as HTMLDivElement);
+//     (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
+//     if (position == u.position) {
+//       (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
+//     }
+//   });
+// }
 
 const fold = () => {
   const msg: IMessageProtocol = {
@@ -307,6 +314,7 @@ const createProfiles = () => {
 
     let spanBet = document.createElement('span');
     spanBet.className = 'betAmount';
+    spanBet.id = `betAmount${i}`;
 
     div.append(img);
     div.append(spanName);
@@ -336,23 +344,31 @@ createProfiles();
   disconnect();
 });
 
-// const send = ()=>{
-//   const msg : IMessageProtocol = {
-//     type:'text',
-//     userId:userId!,
-//     userName:userName,
-//     text:(document.querySelector('#message') as HTMLInputElement).value
-//   }
-//   ws.send(JSON.stringify(msg));
-// }
-// (document.querySelector('#send') as HTMLButtonElement).addEventListener('click', (e)=>{
-//   e.preventDefault();
-//   let text = (document.querySelector('#message') as HTMLInputElement);
-//   if (text.value != "") {
-//     send();
-//   }
-//   text.value = "";
-// });
+const smallWindow = () => {
+  let login = document.querySelector('#loginContainer') as HTMLDivElement;
+  let waiting = document.querySelector('#waitingMessages') as HTMLDivElement;
+  let main = document.querySelector('#main') as HTMLDivElement;
+  let windowSizeAlert = document.querySelector('#windowSizeAlert') as HTMLDivElement;
+  if ((window.innerWidth < 1600 || window.outerWidth < 1600) || (window.innerHeight < 800 || window.outerHeight < 800)) {
+    // if (ws != null) {
+    //   disconnect();
+    // }
+    waiting.classList.add('d-none');
+    main.classList.add('d-none');
+    windowSizeAlert.classList.remove('d-none');
+    (document.querySelector('#loginContainer') as HTMLDivElement).classList.add('d-none');
+  } else {
+    login.classList.remove('d-none');
+    windowSizeAlert.classList.add('d-none');
+  }
+}
+smallWindow();
+window.onresize = () => {
+  smallWindow()
+}
+window.addEventListener("fullscreenchange", () => {
+  smallWindow();
+})
 
 window.onbeforeunload = function (e) {
   if (ws != null) {
