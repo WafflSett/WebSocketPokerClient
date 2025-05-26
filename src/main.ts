@@ -55,26 +55,32 @@ const connect = () => {
       (document.querySelector('#p' + msg.position) as HTMLDivElement).classList.add("d-none");
       return;
     }
-    if (msg.type == 'ready') {
+    if (msg.type == 'start') {
       document.querySelectorAll('#readyUp').forEach((btn: any) => {
         btn.classList.add('d-none');
       })
-      if ((msg.userList!.length > 2 && msg.dealer! + 1 == position) || (msg.userList!.length < 3 && msg.dealer == position)) {
+      if (msg.sBlind == position) {
         bet(msg.bet! / 2, true);
         myBet = msg.bet! / 2;
-        (document.querySelector('#p' + (position)) as HTMLDivElement).children[2].innerHTML = myBet.toString();
-      } else if ((msg.userList!.length > 2 && msg.dealer! + 2 == position) || (msg.userList!.length < 3 && msg.dealer! + 1 == position)) {
+      } else if (msg.bBlind == position) {
         bet(msg.bet!, true);
         myBet = msg.bet!;
-        // TODO - be kell írni
-        // dealer pozíciót máshogy kell számolni
       }
+      console.log((document.querySelector('#betAmount' + (msg.sBlind)) as HTMLSpanElement));
+      console.log((document.querySelector('#betAmount' + (msg.bBlind)) as HTMLSpanElement));
+      
+      (document.querySelector('#betAmount' + (msg.sBlind)) as HTMLSpanElement).innerHTML = (msg.bet! / 2).toString();
+      (document.querySelector('#betAmount' + (msg.bBlind)) as HTMLSpanElement).innerHTML = (msg.bet!).toString();
       return;
+    }
+    if (msg.type == 'ready') {
+      console.log(`Ready: ${msg.ready}/${msg.balance} players are ready`);
+      // TODO: display amount of players ready
     }
     if (msg.type == 'upnext') {
       btnDiv.classList.remove('d-none');
       btnDiv.innerHTML = '';
-      showBets(msg.userList!);
+      // showBets(msg.userList!);
       document.querySelectorAll('.playerPicture').forEach(pX => {
         let idPos: string = pX.parentElement!.id;
         if (Number(idPos[1]) == msg.position) {
@@ -114,6 +120,7 @@ const connect = () => {
 
           callBtn.addEventListener('click', () => {
             bet(msg.runningBet! - myBet);
+            myBet = msg.runningBet! - myBet;
             betAmount.classList.add('d-none');
             console.log('call');
             timerOn = false;
@@ -121,6 +128,7 @@ const connect = () => {
 
           raiseBtn.addEventListener('click', () => {
             bet(Number(betAmount.value!));
+            myBet = Number(betAmount.value);
             betAmount.classList.add('d-none');
             console.log('raise');
             timerOn = false;
@@ -142,6 +150,11 @@ const connect = () => {
           checkBtn.id = 'check-btn';
           checkBtn.textContent = 'Check';
           btnDiv.append(checkBtn);
+
+          checkBtn.addEventListener('click', ()=>{
+            timerOn = false;
+            check();
+          })
         }
         betAmount.classList.remove('d-none');
         const foldBtn = document.createElement('button');
@@ -169,6 +182,7 @@ const connect = () => {
     }
 
     if (msg.type == 'roundend') {
+      myBet = 0;
       let communityCards = document.querySelector('#communityCards') as HTMLDivElement;
       communityCards!.innerHTML = "";
       console.log(msg);
@@ -187,6 +201,7 @@ const connect = () => {
         }
         communityCards!.append(card);
       });
+      
     }
   }
 
@@ -195,19 +210,28 @@ const connect = () => {
   }
 }
 
-const showBets = (userList: { userId: number, userName: string, position: number, bet: number }[]) => {
-  userList?.forEach(u => {
-    let pX = (document.querySelector('#p' + (u.position)) as HTMLDivElement);
-    (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
-    if (position == u.position) {
-      (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
-    }
-  });
-}
+// const showBets = (userList: { userId: number, userName: string, position: number, bet: number }[]) => {
+//   userList?.forEach(u => {
+//     let pX = (document.querySelector('#p' + (u.position)) as HTMLDivElement);
+//     (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
+//     if (position == u.position) {
+//       (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
+//     }
+//   });
+// }
 
 const fold = () => {
   const msg: IMessageProtocol = {
     type: 'fold',
+    userId: userId!,
+    userName: userName
+  }
+  ws.send(JSON.stringify(msg));
+}
+
+const check = () => {
+  const msg: IMessageProtocol = {
+    type: 'check',
     userId: userId!,
     userName: userName
   }
@@ -307,6 +331,7 @@ const createProfiles = () => {
 
     let spanBet = document.createElement('span');
     spanBet.className = 'betAmount';
+    spanBet.id = `betAmount${i}`
 
     div.append(img);
     div.append(spanName);

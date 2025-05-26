@@ -12,5 +12,8 @@ export default interface IMessageProtocol {
     runningBet?: number,
     bet?: number,
     inProgress?: boolean,
-    balance? : number
+    balance? : number,
+    ready?: number,
+    sBlind?: number,
+    bBlind?: number
 }
