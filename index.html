@@ -61,7 +61,7 @@
   <div
     class="d-none container align-items-center justify-content-center mx-auto col-xs-12 col-sm-12 col-md-10 col-lg-6 col-xl-6 col-xxl-3"
     id="waitingMessages">
-    <span id="waitingMessage" class="display-6"></span>
+    <span id="waitingMessage" class="display-6">Waiting for free table.</span>
   </div>
 
   <div class="container-fluid" id="main">
@@ -70,7 +70,7 @@
       <div class="col-9 d-flex justify-content-center align-items-center">
         <div class="table-container">
           <img src="src/images/table.png" class="table-image" alt="table">
-
+          <p id="pot"></p>
 
           <div id="communityCards"></div>
         </div>
@@ -80,14 +80,18 @@
         <p class="my-2" id="table-count"></p>
 
         <div style="height: 40%; display: flex;" class="align-items-center w-100 d-flex mt-2" id="action-btnsMainDiv">
-          <button class="btn mx-auto align-bottom w-25" id="readyUp">Ready</button>
-          <p class="w-75 text-center my-auto d-none" id="waitingForReady"></p>
+          <button class="btn mx-auto align-bottom w-50" id="readyUp">Ready</button>
+          <button class="btn mx-auto align-bottom w-50 d-none" id="unready">Unready</button>
+          <p class="w-50 mx-auto text-center my-auto d-none" id="waitingForReady"></p>
           <div class="row h-100 w-100">
+            <div class="col-12 h-25 w-100 align-items-center d-flex d-none" id="balanceDiv">
+              <p id="balance"></p>
+            </div>
             <div class="col-12 h-25 w-100 align-items-center d-flex" id="betField">
               <input type="number" class="form-control w-50 me-1 d-none" placeholder="Bet amount" step="1"
                 id="bet-amount">
             </div>
-            <div class="col-12 h-75 d-flex align-items-center justify-content-center">
+            <div class="col-12 h-50 d-flex align-items-center justify-content-center">
               <div class="d-none w-100" id="action-btns"></div>
             </div>
           </div>

@@ -10,8 +10,10 @@ let userName: string;
 let tableId: number;
 let position: number;
 let waitingMessage = document.querySelector('#waitingMessage') as HTMLParagraphElement;
+let potP = document.querySelector('#pot') as HTMLParagraphElement;
 let btnDiv = (document.querySelector('#action-btns') as HTMLDivElement);
 let betAmount: HTMLInputElement = (document.querySelector('#bet-amount') as HTMLInputElement);
+let waitingForReady = (document.querySelector("#waitingForReady") as HTMLParagraphElement)
 let myBet: number = 0;
 let timerOn = false;
 
@@ -49,6 +51,10 @@ const connect = () => {
       (document.querySelector('#table') as HTMLDivElement).classList.remove('d-none');
       (document.querySelector('#main') as HTMLDivElement).classList.remove('d-none');
       (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`;
+      // if (msg.ready != null) {
+      //   waitingForReady.classList.remove("d-none");
+      //   waitingForReady.innerHTML = `${msg.ready}/${msg.balance} players are ready`;
+      // }
       showOnlineUsers(msg.userList!, msg.position, msg.userName);
       return;
     }
@@ -67,21 +73,22 @@ const connect = () => {
         bet(msg.bet!, true);
         myBet = msg.bet!;
       }
-      console.log((document.querySelector('#betAmount' + (msg.sBlind)) as HTMLSpanElement));
-      console.log((document.querySelector('#betAmount' + (msg.bBlind)) as HTMLSpanElement));
-      
+      // console.log((document.querySelector('#betAmount' + (msg.sBlind)) as HTMLSpanElement));
+      // console.log((document.querySelector('#betAmount' + (msg.bBlind)) as HTMLSpanElement));
+
       (document.querySelector('#betAmount' + (msg.sBlind)) as HTMLSpanElement).innerHTML = (msg.bet! / 2).toString();
       (document.querySelector('#betAmount' + (msg.bBlind)) as HTMLSpanElement).innerHTML = (msg.bet!).toString();
       return;
     }
     if (msg.type == 'ready') {
       console.log(`Ready: ${msg.ready}/${msg.balance} players are ready`);
-      // TODO: display amount of players ready
+      waitingForReady.classList.remove("d-none");
+      waitingForReady.innerHTML = `${msg.ready}/${msg.balance} players are ready`;
     }
     if (msg.type == 'upnext') {
-      btnDiv.classList.remove('d-none');
+      potP.innerHTML = `${msg.pot} Ft`
+      clearBTNs();
       btnDiv.innerHTML = '';
-      // showBets(msg.userList!);
       document.querySelectorAll('.playerPicture').forEach(pX => {
         let idPos: string = pX.parentElement!.id;
         if (Number(idPos[1]) == msg.position) {
@@ -91,6 +98,9 @@ const connect = () => {
         }
       });
       if (msg.position == position) {
+        (document.querySelector('#balanceDiv') as HTMLDivElement).classList.remove("d-none");
+        (document.querySelector('#balance') as HTMLParagraphElement).innerHTML = `${msg.balance} Ft`;
+        btnDiv.classList.remove('d-none');
         startTimer();
         (document.querySelector('#action-btnsMainDiv') as HTMLDivElement).classList.remove('d-none');
         if (msg.runningBet! > 0) {
@@ -101,10 +111,30 @@ const connect = () => {
           callBtn.id = "call-btn";
           callBtn.textContent = "Call";
 
+          callBtn.addEventListener('click', () => {
+            bet(msg.runningBet! - myBet);
+            myBet = msg.runningBet! - myBet;
+            betAmount.classList.add('d-none');
+            console.log('call');
+            timerOn = false;
+            clearBTNs();
+          });
+          (document.querySelector('#betField') as HTMLDivElement).append(callBtn);
+
           const raiseBtn = document.createElement('button');
           raiseBtn.className = 'btn w-100 my-1 me-2';
           raiseBtn.id = 'raise-btn';
           raiseBtn.textContent = 'Raise';
+
+          raiseBtn.addEventListener('click', () => {
+            bet(Number(betAmount.value!));
+            myBet = Number(betAmount.value);
+            betAmount.classList.add('d-none');
+            console.log('raise');
+            timerOn = false;
+            clearBTNs();
+          });
+          btnDiv.appendChild(raiseBtn);
 
           betAmount.min = String(msg.runningBet);
           betAmount.value = String(msg.runningBet);
@@ -113,38 +143,34 @@ const connect = () => {
           allinBTN.className = 'btn w-100 my-1 me-2';
           allinBTN.id = 'allin-btn';
           allinBTN.textContent = 'All In';
-          // TODO -- alllinBtn eventlistener -- player balance required
-          let prevCall = (document.querySelector('#call-btn') as HTMLDivElement);
-          if (prevCall != null) {
-            prevCall.remove();
-          }
-
-          callBtn.addEventListener('click', () => {
-            bet(msg.runningBet! - myBet);
-            myBet = msg.runningBet! - myBet;
-            betAmount.classList.add('d-none');
-            console.log('call');
-            timerOn = false;
-          });
-
-          raiseBtn.addEventListener('click', () => {
-            bet(Number(betAmount.value!));
-            myBet = Number(betAmount.value);
-            betAmount.classList.add('d-none');
-            console.log('raise');
-            timerOn = false;
-          });
-
           btnDiv.appendChild(allinBTN);
-          (document.querySelector('#betField') as HTMLDivElement).append(callBtn);
-          btnDiv.appendChild(raiseBtn);
+          // TODO -- alllinBtn eventlistener -- player balance required
+          // let prevCall = (document.querySelector('#call-btn') as HTMLDivElement);
+          // if (prevCall != null) {
+          //   prevCall.remove();
+          // }
+
+
+
         } else {
           // set new runningBet or pass
+          betAmount.min = String(msg.runningBet);
+          betAmount.value = String(msg.runningBet);
+
           const betBtn = document.createElement('button');
           betBtn.className = 'btn w-100 my-1 me-2';
           betBtn.id = 'bet-btn';
           betBtn.textContent = 'Bet';
           btnDiv.append(betBtn);
+
+          betBtn.addEventListener('click', () => {
+            bet(Number(betAmount.value!));
+            myBet = Number(betAmount.value!);
+            betAmount.classList.add('d-none');
+            console.log('bet');
+            timerOn = false;
+            clearBTNs();
+          });
 
           const checkBtn = document.createElement('button');
           checkBtn.className = 'btn w-100 my-1 me-2';
@@ -152,9 +178,10 @@ const connect = () => {
           checkBtn.textContent = 'Check';
           btnDiv.append(checkBtn);
 
-          checkBtn.addEventListener('click', ()=>{
+          checkBtn.addEventListener('click', () => {
             timerOn = false;
             check();
+            clearBTNs();
           })
         }
         betAmount.classList.remove('d-none');
@@ -168,10 +195,12 @@ const connect = () => {
           betAmount.classList.add('d-none');
           timerOn = false;
           fold()
+          clearBTNs();
         });
       } else {
         (document.querySelector('#action-btnsMainDiv') as HTMLDivElement).classList.add('d-none');
         betAmount.classList.add('d-none');
+        clearBTNs();
       }
     }
     if (msg.type == 'hand') {
@@ -183,6 +212,9 @@ const connect = () => {
     }
 
     if (msg.type == 'roundend') {
+      document.querySelectorAll(".betAmount").forEach(span => {
+        span.innerHTML = "0";
+      });
       myBet = 0;
       let communityCards = document.querySelector('#communityCards') as HTMLDivElement;
       communityCards!.innerHTML = "";
@@ -205,6 +237,7 @@ const connect = () => {
       timerOn = false;
       //reset timer
       //clear buttons
+      clearBTNs();
     }
   }
 
@@ -213,15 +246,14 @@ const connect = () => {
   }
 }
 
-// const showBets = (userList: { userId: number, userName: string, position: number, bet: number }[]) => {
-//   userList?.forEach(u => {
-//     let pX = (document.querySelector('#p' + (u.position)) as HTMLDivElement);
-//     (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
-//     if (position == u.position) {
-//       (pX.children[2] as HTMLSpanElement).innerHTML = u.bet.toString();
-//     }
-//   });
-// }
+const clearBTNs = () => {
+  btnDiv.innerHTML = "";
+  (document.querySelector('#balanceDiv') as HTMLDivElement).classList.add("d-none");
+  let prevCall = (document.querySelector('#call-btn') as HTMLDivElement);
+  if (prevCall != null) {
+    prevCall.remove();
+  }
+}
 
 const fold = () => {
   const msg: IMessageProtocol = {
@@ -260,7 +292,7 @@ const startTimer = async () => {
   let thisInterval = setInterval(() => {
     if (timerOn && timeLeft > 1) {
       timeLeft--;
-      timer.innerText = `${Math.round(timeLeft/2).toString()}s`;
+      timer.innerText = `${Math.round(timeLeft / 2).toString()}s`;
       timer.style.width = `${(timeLeft / 120 * 90) + 10}%`;
       if (timeLeft <= 10) {
         if (timeLeft % 2 == 0) timer.style.background = "red";
@@ -280,7 +312,7 @@ const startTimer = async () => {
 const disconnect = () => {
   if (ws != null) {
     console.log(ws);
-    
+
     const msg: IMessageProtocol = {
       type: 'disc',
       userId: userId!,
@@ -291,7 +323,7 @@ const disconnect = () => {
     console.log('Disconnected from server');
     ws = null;
     timerOn = false;
-    
+
     (document.querySelector('#p' + (msg.userId - 1)) as HTMLDivElement).classList.add('d-none');
     (document.querySelector('#table') as HTMLDivElement).classList.add('d-none');
     (document.querySelector('#navForm') as HTMLInputElement).classList.add('d-none');
@@ -302,6 +334,13 @@ const disconnect = () => {
 const ready = () => {
   const msg: IMessageProtocol = {
     type: 'ready',
+    userId: userId!
+  }
+  ws!.send(JSON.stringify(msg));
+}
+const unready = () => {
+  const msg: IMessageProtocol = {
+    type: 'unready',
     userId: userId!
   }
   ws!.send(JSON.stringify(msg));
@@ -359,8 +398,17 @@ createProfiles();
   }
 });
 
-(document.querySelector('#readyUp') as HTMLButtonElement).addEventListener('click', () => {
+let readyBtn = (document.querySelector('#readyUp') as HTMLButtonElement);
+let unreadyBtn = (document.querySelector('#unready') as HTMLButtonElement);
+readyBtn.addEventListener('click', () => {
+  unreadyBtn.classList.remove("d-none");
+  readyBtn.classList.add("d-none");
   ready();
+});
+unreadyBtn.addEventListener('click', () => {
+  readyBtn.classList.remove("d-none");
+  unreadyBtn.classList.add("d-none");
+  unready();
 });
 
 (document.querySelector('#logout') as HTMLButtonElement).addEventListener('click', () => {
@@ -372,7 +420,7 @@ const smallWindow = () => {
   let waiting = document.querySelector('#waitingMessages') as HTMLDivElement;
   let main = document.querySelector('#main') as HTMLDivElement;
   let windowSizeAlert = document.querySelector('#windowSizeAlert') as HTMLDivElement;
-  if ((window.innerWidth < 1600 || window.outerWidth < 1600) || (window.innerHeight < 800 || window.outerHeight < 800)) {
+  if ((window.innerWidth < 1700 || window.outerWidth < 1600) || (window.innerHeight < 800 || window.outerHeight < 800)) {
     if (ws != null) {
       disconnect();
     }
