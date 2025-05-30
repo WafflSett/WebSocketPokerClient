@@ -34,10 +34,14 @@ body {
     display: block;
 }
 
+.heyitsme img {
+    filter: sepia(100%) saturate(300%) brightness(45%) hue-rotate(180deg);
+}
+
 .displayedUName {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 40%;
     transform: translate(-50%, -50%);
     width: 8ch;
     overflow: hidden;
@@ -239,8 +243,8 @@ img {
 
 .betAmount {
     position: absolute;
-    top: 50%;
-    right: -50%;
+    top: 60%;
+    right: 25%;
     transform: translate(-50%, -50%);
     text-align: center;
 }

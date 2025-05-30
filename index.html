@@ -61,13 +61,14 @@
   <div
     class="d-none container align-items-center justify-content-center mx-auto col-xs-12 col-sm-12 col-md-10 col-lg-6 col-xl-6 col-xxl-3"
     id="waitingMessages">
-    <span id="waitingMessage" class="display-6">Waiting for free table.</span>
+    <span id="waitingMessage" class="display-6">Waiting... current table is in progress!</span>
   </div>
 
   <div class="container-fluid" id="main">
     <div class="row w-100 my-2 d-none" id="table" style="height: 90vh;">
 
       <div class="col-9 d-flex justify-content-center align-items-center">
+        <div class="fixed-top mt-5" id="alert"></div>
         <div class="table-container">
           <img src="src/images/table.png" class="table-image" alt="table">
           <p id="pot"></p>
@@ -80,8 +81,8 @@
         <p class="my-2" id="table-count"></p>
 
         <div style="height: 40%; display: flex;" class="align-items-center w-100 d-flex mt-2" id="action-btnsMainDiv">
-          <button class="btn mx-auto align-bottom w-50" id="readyUp">Ready</button>
-          <button class="btn mx-auto align-bottom w-50 d-none" id="unready">Unready</button>
+          <button class="btn mx-auto align-bottom w-50 ready-btns" id="readyUp">Ready</button>
+          <button class="btn mx-auto align-bottom w-50 d-none ready-btns" id="unready">Unready</button>
           <p class="w-50 mx-auto text-center my-auto d-none" id="waitingForReady"></p>
           <div class="row h-100 w-100">
             <div class="col-12 h-25 w-100 align-items-center d-flex d-none" id="balanceDiv">

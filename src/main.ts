@@ -16,6 +16,7 @@ let betAmount: HTMLInputElement = (document.querySelector('#bet-amount') as HTML
 let waitingForReady = (document.querySelector("#waitingForReady") as HTMLParagraphElement)
 let myBet: number = 0;
 let timerOn = false;
+let myBalance:number;
 
 const connect = () => {
   ws = new WebSocket('ws://localhost:8081');
@@ -26,12 +27,10 @@ const connect = () => {
     console.log('Connected to server!');
     const msg: IMessageProtocol = {
       type: 'init',
-      userId: 0,
-      userName: userName,
-      text: ''
+      userId: -1,
+      userName: userName
     }
     ws!.send(JSON.stringify(msg));
-
 
     (document.querySelector('#navForm') as HTMLInputElement).classList.remove('d-none');
     (document.querySelector('#username') as HTMLInputElement).innerHTML = userName;
@@ -45,17 +44,18 @@ const connect = () => {
       userId = msg.userId;
       tableId = msg.tableId!;
       position = msg.position!;
+      myBalance = msg.balance!;
+
+      (document.querySelector('#table') as HTMLDivElement).classList.remove('d-none');
+      (document.querySelector('#main') as HTMLDivElement).classList.remove('d-none');
+      (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`;  
       return;
     }
     if (msg.type == 'join') {
-      (document.querySelector('#table') as HTMLDivElement).classList.remove('d-none');
-      (document.querySelector('#main') as HTMLDivElement).classList.remove('d-none');
-      (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`;
-      // if (msg.ready != null) {
-      //   waitingForReady.classList.remove("d-none");
-      //   waitingForReady.innerHTML = `${msg.ready}/${msg.balance} players are ready`;
-      // }
-      showOnlineUsers(msg.userList!, msg.position, msg.userName);
+      if (msg.inProgress == true) {
+        console.log("match already in progress, please wait");
+      }
+      showOnlineUsers(msg.userList!);
       return;
     }
     if (msg.type == 'disc') {
@@ -63,21 +63,28 @@ const connect = () => {
       return;
     }
     if (msg.type == 'start') {
-      document.querySelectorAll('#readyUp').forEach((btn: any) => {
+      (document.querySelector('#balanceDiv') as HTMLDivElement).classList.remove("d-none");
+      document.querySelectorAll('.ready-btns').forEach((btn: any) => {
         btn.classList.add('d-none');
       })
+      waitingForReady.classList.add("d-none");
       if (msg.sBlind == position) {
         bet(msg.bet! / 2, true);
         myBet = msg.bet! / 2;
+        updateBalance();
+
       } else if (msg.bBlind == position) {
         bet(msg.bet!, true);
         myBet = msg.bet!;
-      }
-      // console.log((document.querySelector('#betAmount' + (msg.sBlind)) as HTMLSpanElement));
-      // console.log((document.querySelector('#betAmount' + (msg.bBlind)) as HTMLSpanElement));
+        updateBalance();
 
+      }
       (document.querySelector('#betAmount' + (msg.sBlind)) as HTMLSpanElement).innerHTML = (msg.bet! / 2).toString();
       (document.querySelector('#betAmount' + (msg.bBlind)) as HTMLSpanElement).innerHTML = (msg.bet!).toString();
+      return;
+    }
+    if (msg.type == 'blind') {
+      displayBets(msg.userList!);
       return;
     }
     if (msg.type == 'ready') {
@@ -92,65 +99,61 @@ const connect = () => {
       document.querySelectorAll('.playerPicture').forEach(pX => {
         let idPos: string = pX.parentElement!.id;
         if (Number(idPos[1]) == msg.position) {
-          (pX as HTMLImageElement).style.filter = 'brightness(1)';
+          if (Number(idPos[1]) == position) {
+            (pX as HTMLImageElement).style.filter = 'sepia(100%) saturate(300%) brightness(80%) hue-rotate(180deg)';
+          }else{
+            (pX as HTMLImageElement).style.filter = 'brightness(1)';
+          }
         } else {
-          (pX as HTMLImageElement).style.filter = 'brightness(.45)';
+          if (Number(idPos[1]) == position) {
+            (pX as HTMLImageElement).style.filter = 'sepia(100%) saturate(300%) brightness(45%) hue-rotate(180deg)';
+          }else{
+            (pX as HTMLImageElement).style.filter = 'brightness(.45)';
+          }
         }
       });
+      displayBets(msg.userList!);
       if (msg.position == position) {
-        (document.querySelector('#balanceDiv') as HTMLDivElement).classList.remove("d-none");
-        (document.querySelector('#balance') as HTMLParagraphElement).innerHTML = `${msg.balance} Ft`;
+        (document.querySelector('#balance') as HTMLParagraphElement).innerHTML = `${myBalance} Ft`;
         btnDiv.classList.remove('d-none');
         startTimer();
         (document.querySelector('#action-btnsMainDiv') as HTMLDivElement).classList.remove('d-none');
         if (msg.runningBet! > 0) {
           // match runningBet or raise runningBet by at least 2x the blind
-
           const callBtn = document.createElement('button');
-          callBtn.className = 'btn w-50 my-1 ms-1';
+          callBtn.className = 'btn w-100 my-1 ms-1';
           callBtn.id = "call-btn";
           callBtn.textContent = "Call";
 
           callBtn.addEventListener('click', () => {
             bet(msg.runningBet! - myBet);
             myBet = msg.runningBet! - myBet;
-            betAmount.classList.add('d-none');
             console.log('call');
             timerOn = false;
+            updateBalance();
             clearBTNs();
           });
-          (document.querySelector('#betField') as HTMLDivElement).append(callBtn);
+          btnDiv.appendChild(callBtn);
 
           const raiseBtn = document.createElement('button');
-          raiseBtn.className = 'btn w-100 my-1 me-2';
+          raiseBtn.className = 'btn w-50 my-1 me-2';
           raiseBtn.id = 'raise-btn';
           raiseBtn.textContent = 'Raise';
 
           raiseBtn.addEventListener('click', () => {
-            bet(Number(betAmount.value!));
-            myBet = Number(betAmount.value);
-            betAmount.classList.add('d-none');
-            console.log('raise');
-            timerOn = false;
-            clearBTNs();
+            if (Number(betAmount.value!)>msg.runningBet!) {
+              bet(Number(betAmount.value!));
+              myBet = Number(betAmount.value);
+              console.log('raise');
+              timerOn = false;
+              updateBalance();
+              clearBTNs();
+            }
           });
-          btnDiv.appendChild(raiseBtn);
+          (document.querySelector('#betField') as HTMLDivElement).append(raiseBtn);
 
           betAmount.min = String(msg.runningBet);
           betAmount.value = String(msg.runningBet);
-
-          const allinBTN = document.createElement('button');
-          allinBTN.className = 'btn w-100 my-1 me-2';
-          allinBTN.id = 'allin-btn';
-          allinBTN.textContent = 'All In';
-          btnDiv.appendChild(allinBTN);
-          // TODO -- alllinBtn eventlistener -- player balance required
-          // let prevCall = (document.querySelector('#call-btn') as HTMLDivElement);
-          // if (prevCall != null) {
-          //   prevCall.remove();
-          // }
-
-
 
         } else {
           // set new runningBet or pass
@@ -158,32 +161,47 @@ const connect = () => {
           betAmount.value = String(msg.runningBet);
 
           const betBtn = document.createElement('button');
-          betBtn.className = 'btn w-100 my-1 me-2';
+          betBtn.className = 'btn w-50 my-1 me-2';
           betBtn.id = 'bet-btn';
           betBtn.textContent = 'Bet';
-          btnDiv.append(betBtn);
 
           betBtn.addEventListener('click', () => {
-            bet(Number(betAmount.value!));
-            myBet = Number(betAmount.value!);
-            betAmount.classList.add('d-none');
-            console.log('bet');
-            timerOn = false;
-            clearBTNs();
+            if (Number(betAmount.value!) > 0) {
+              bet(Number(betAmount.value!));
+              myBet = Number(betAmount.value!);
+              console.log('bet');
+              timerOn = false;
+              updateBalance();
+              clearBTNs();
+            }
           });
+          (document.querySelector('#betField') as HTMLDivElement).append(betBtn);
 
           const checkBtn = document.createElement('button');
           checkBtn.className = 'btn w-100 my-1 me-2';
           checkBtn.id = 'check-btn';
           checkBtn.textContent = 'Check';
-          btnDiv.append(checkBtn);
 
           checkBtn.addEventListener('click', () => {
             timerOn = false;
             check();
             clearBTNs();
           })
+          btnDiv.append(checkBtn);
         }
+
+        const allinBTN = document.createElement('button');
+        allinBTN.className = 'btn w-100 my-1 me-2';
+        allinBTN.id = 'allin-btn';
+        allinBTN.textContent = 'All In';
+        allinBTN.addEventListener('click', ()=>{
+          bet(myBalance);
+          myBalance=0;
+          (document.querySelector('#balance') as HTMLDivElement).innerHTML = "0";
+
+        })
+        btnDiv.appendChild(allinBTN);
+
         betAmount.classList.remove('d-none');
         const foldBtn = document.createElement('button');
         foldBtn.className = 'btn w-100 my-1 me-2';
@@ -192,16 +210,16 @@ const connect = () => {
         btnDiv.append(foldBtn);
 
         foldBtn.addEventListener('click', () => {
-          betAmount.classList.add('d-none');
           timerOn = false;
           fold()
           clearBTNs();
         });
       } else {
-        (document.querySelector('#action-btnsMainDiv') as HTMLDivElement).classList.add('d-none');
-        betAmount.classList.add('d-none');
+        btnDiv.classList.add('d-none');
+        // betAmount.classList.add('d-none');
         clearBTNs();
       }
+      return;
     }
     if (msg.type == 'hand') {
       (document.querySelector('#cards') as HTMLDivElement).classList.remove('d-none');
@@ -209,8 +227,8 @@ const connect = () => {
       const secondCard: string = msg.hand![1];
       (document.querySelector('#firstCard') as HTMLImageElement).src = `src/images/${firstCard[0]}/${firstCard}.png`;
       (document.querySelector('#secondCard') as HTMLImageElement).src = `src/images/${secondCard[0]}/${secondCard}.png`;
+      return;
     }
-
     if (msg.type == 'roundend') {
       document.querySelectorAll(".betAmount").forEach(span => {
         span.innerHTML = "0";
@@ -238,6 +256,18 @@ const connect = () => {
       //reset timer
       //clear buttons
       clearBTNs();
+      return;
+    }
+    if (msg.type == 'win') {
+      console.log(`CONGRATS! user at ${msg.position} position won the game`);
+      if (msg.position == position) {
+        myBalance+=msg.pot!;
+      }
+      (document.querySelector('#balance') as HTMLDivElement).innerHTML = `${myBalance}`;
+
+      reset();
+      showOnlineUsers(msg.userList!);
+      (document.querySelector('#alert') as HTMLDivElement).innerHTML = `alert for debugging: ${msg.userName}@${msg.position} won the game!`;
     }
   }
 
@@ -246,12 +276,22 @@ const connect = () => {
   }
 }
 
+const updateBalance = ()=>{
+  myBalance-=myBet;
+  (document.querySelector('#balance') as HTMLParagraphElement).innerHTML = `${myBalance} Ft`;
+}
+
 const clearBTNs = () => {
   btnDiv.innerHTML = "";
-  (document.querySelector('#balanceDiv') as HTMLDivElement).classList.add("d-none");
-  let prevCall = (document.querySelector('#call-btn') as HTMLDivElement);
-  if (prevCall != null) {
-    prevCall.remove();
+  betAmount.classList.add('d-none');
+  // (document.querySelector('#balanceDiv') as HTMLDivElement).classList.add("d-none");
+  let prevRaise = (document.querySelector('#raise-btn') as HTMLDivElement);
+  if (prevRaise != null) {
+    prevRaise.remove();
+  }
+  prevRaise = (document.querySelector('#bet-btn') as HTMLDivElement);
+  if (prevRaise != null) {
+    prevRaise.remove();
   }
 }
 
@@ -322,12 +362,14 @@ const disconnect = () => {
     ws!.send(JSON.stringify(msg));
     console.log('Disconnected from server');
     ws = null;
-    timerOn = false;
-
-    (document.querySelector('#p' + (msg.userId - 1)) as HTMLDivElement).classList.add('d-none');
+    userId = -1;
+    userName = "";
+    myBalance = 0;
+    (document.querySelector('#balanceDiv') as HTMLDivElement).classList.add("d-none");
     (document.querySelector('#table') as HTMLDivElement).classList.add('d-none');
     (document.querySelector('#navForm') as HTMLInputElement).classList.add('d-none');
     (document.querySelector('#loginContainer') as HTMLDivElement).classList.remove('d-none');
+    reset();
   }
 }
 
@@ -338,15 +380,8 @@ const ready = () => {
   }
   ws!.send(JSON.stringify(msg));
 }
-const unready = () => {
-  const msg: IMessageProtocol = {
-    type: 'unready',
-    userId: userId!
-  }
-  ws!.send(JSON.stringify(msg));
-}
 
-const showOnlineUsers = (userList: { position: number, userName: string }[], position: any, userName: any) => {
+const showOnlineUsers = (userList: { position: number, userName: string }[]) => {
   document.querySelectorAll('.profile').forEach(p => {
     p.classList.add('d-none');
   });
@@ -355,8 +390,14 @@ const showOnlineUsers = (userList: { position: number, userName: string }[], pos
     pX.classList.remove('d-none');
     (pX.children[1] as HTMLSpanElement).innerHTML = u.userName;
     if (position == u.position) {
-      (pX.children[1] as HTMLSpanElement).innerHTML = userName;
+      pX.classList.add('heyitsme');
     }
+  });
+}
+
+const displayBets = (userlist : { position: number, userName: string, bet:number }[]) =>{
+  userlist.forEach(user => {
+    (document.querySelector(`#betAmount${user.position}`) as HTMLSpanElement).innerHTML = user.bet.toString();
   });
 }
 
@@ -408,8 +449,21 @@ readyBtn.addEventListener('click', () => {
 unreadyBtn.addEventListener('click', () => {
   readyBtn.classList.remove("d-none");
   unreadyBtn.classList.add("d-none");
-  unready();
+  ready();
 });
+
+const reset = ()=>{
+  timerOn = false;
+  clearBTNs();
+  
+  readyBtn.classList.remove('d-none');
+  betAmount.classList.add('d-none');
+  (document.querySelector('#cards') as HTMLDivElement).classList.add('d-none');
+  (document.querySelector('#firstCard') as HTMLImageElement).src = "";
+  (document.querySelector('#secondCard') as HTMLImageElement).src = "";
+  (document.querySelector('.table-container') as HTMLDivElement).innerHTML = `<img src="src/images/table.png" class="table-image" alt="table"><p id="pot"></p><div id="communityCards"></div>`;
+  createProfiles();
+}
 
 (document.querySelector('#logout') as HTMLButtonElement).addEventListener('click', () => {
   disconnect();
@@ -443,12 +497,8 @@ window.addEventListener("fullscreenchange", () => {
   smallWindow();
 })
 
-window.onbeforeunload = function (e) {
+window.onbeforeunload = function () {
   if (ws != null) {
-    // UNCOMMENT ON RELEASE
-    // akkor is disconnectel ha nemet nyomsz..
-    // bandi3028: meglesz
-    // e.preventDefault();
     disconnect();
   }
 };
