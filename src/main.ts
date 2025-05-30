@@ -16,7 +16,7 @@ let betAmount: HTMLInputElement = (document.querySelector('#bet-amount') as HTML
 let waitingForReady = (document.querySelector("#waitingForReady") as HTMLParagraphElement)
 let myBet: number = 0;
 let timerOn = false;
-let myBalance:number;
+let myBalance: number;
 
 const connect = () => {
   ws = new WebSocket('ws://localhost:8081');
@@ -48,7 +48,7 @@ const connect = () => {
 
       (document.querySelector('#table') as HTMLDivElement).classList.remove('d-none');
       (document.querySelector('#main') as HTMLDivElement).classList.remove('d-none');
-      (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`;  
+      (document.querySelector('#table-count') as HTMLParagraphElement).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`;
       return;
     }
     if (msg.type == 'join') {
@@ -101,13 +101,13 @@ const connect = () => {
         if (Number(idPos[1]) == msg.position) {
           if (Number(idPos[1]) == position) {
             (pX as HTMLImageElement).style.filter = 'sepia(100%) saturate(300%) brightness(80%) hue-rotate(180deg)';
-          }else{
+          } else {
             (pX as HTMLImageElement).style.filter = 'brightness(1)';
           }
         } else {
           if (Number(idPos[1]) == position) {
             (pX as HTMLImageElement).style.filter = 'sepia(100%) saturate(300%) brightness(45%) hue-rotate(180deg)';
-          }else{
+          } else {
             (pX as HTMLImageElement).style.filter = 'brightness(.45)';
           }
         }
@@ -141,7 +141,7 @@ const connect = () => {
           raiseBtn.textContent = 'Raise';
 
           raiseBtn.addEventListener('click', () => {
-            if (Number(betAmount.value!)>msg.runningBet!) {
+            if (Number(betAmount.value!) > msg.runningBet!) {
               bet(Number(betAmount.value!));
               myBet = Number(betAmount.value);
               console.log('raise');
@@ -194,9 +194,9 @@ const connect = () => {
         allinBTN.className = 'btn w-100 my-1 me-2';
         allinBTN.id = 'allin-btn';
         allinBTN.textContent = 'All In';
-        allinBTN.addEventListener('click', ()=>{
-          bet(myBalance);
-          myBalance=0;
+        allinBTN.addEventListener('click', () => {
+          allIn(myBalance);
+          myBalance = 0;
           (document.querySelector('#balance') as HTMLDivElement).innerHTML = "0";
 
         })
@@ -261,7 +261,7 @@ const connect = () => {
     if (msg.type == 'win') {
       console.log(`CONGRATS! user at ${msg.position} position won the game`);
       if (msg.position == position) {
-        myBalance+=msg.pot!;
+        myBalance += msg.pot!;
       }
       (document.querySelector('#balance') as HTMLDivElement).innerHTML = `${myBalance}`;
 
@@ -276,8 +276,8 @@ const connect = () => {
   }
 }
 
-const updateBalance = ()=>{
-  myBalance-=myBet;
+const updateBalance = () => {
+  myBalance -= myBet;
   (document.querySelector('#balance') as HTMLParagraphElement).innerHTML = `${myBalance} Ft`;
 }
 
@@ -323,7 +323,18 @@ const bet = (amount: number, blind?: boolean) => {
   ws!.send(JSON.stringify(msg));
 }
 
+const allIn = (amount: number) => {
+  const msg: IMessageProtocol = {
+    type: 'allin',
+    userId: userId!,
+    userName: userName,
+    bet: amount
+  }
+  ws!.send(JSON.stringify(msg));
+}
+
 const startTimer = async () => {
+  timerOn = false;
   let timer = document.querySelector('#timerBar') as HTMLDivElement;
   timer.style.transition = '1s';
   let timeLeft = 120;
@@ -395,7 +406,7 @@ const showOnlineUsers = (userList: { position: number, userName: string }[]) => 
   });
 }
 
-const displayBets = (userlist : { position: number, userName: string, bet:number }[]) =>{
+const displayBets = (userlist: { position: number, userName: string, bet: number }[]) => {
   userlist.forEach(user => {
     (document.querySelector(`#betAmount${user.position}`) as HTMLSpanElement).innerHTML = user.bet.toString();
   });
@@ -452,10 +463,10 @@ unreadyBtn.addEventListener('click', () => {
   ready();
 });
 
-const reset = ()=>{
+const reset = () => {
   timerOn = false;
   clearBTNs();
-  
+  (document.querySelector('#balanceDiv') as HTMLDivElement).classList.add("d-none");
   readyBtn.classList.remove('d-none');
   betAmount.classList.add('d-none');
   (document.querySelector('#cards') as HTMLDivElement).classList.add('d-none');
