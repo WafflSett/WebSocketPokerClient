@@ -195,10 +195,11 @@ const connect = () => {
         allinBTN.id = 'allin-btn';
         allinBTN.textContent = 'All In';
         allinBTN.addEventListener('click', () => {
-          allIn(myBalance);
+          allIn();
           myBalance = 0;
-          (document.querySelector('#balance') as HTMLDivElement).innerHTML = "0";
-
+          timerOn = false;
+          (document.querySelector('#balance') as HTMLDivElement).innerHTML = "0 Ft";
+          clearBTNs();
         })
         btnDiv.appendChild(allinBTN);
 
@@ -236,7 +237,7 @@ const connect = () => {
       myBet = 0;
       let communityCards = document.querySelector('#communityCards') as HTMLDivElement;
       communityCards!.innerHTML = "";
-      console.log(msg);
+      // console.log(msg);
       msg.hand!.forEach(c => {
         let card = document.createElement('img');
         card.src = `src/images/${c[0]}/${c}.png`;
@@ -323,12 +324,10 @@ const bet = (amount: number, blind?: boolean) => {
   ws!.send(JSON.stringify(msg));
 }
 
-const allIn = (amount: number) => {
+const allIn = () => {
   const msg: IMessageProtocol = {
     type: 'allin',
-    userId: userId!,
-    userName: userName,
-    bet: amount
+    userId: userId!
   }
   ws!.send(JSON.stringify(msg));
 }
