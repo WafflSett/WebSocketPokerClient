@@ -248,3 +248,14 @@ img {
     transform: translate(-50%, -50%);
     text-align: center;
 }
+
+#showdownWindow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(18, 16, 11, .9);
+    transition: .5s;
+}

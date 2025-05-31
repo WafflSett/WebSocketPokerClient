@@ -254,18 +254,16 @@ const connect = () => {
         communityCards!.append(card);
       });
       timerOn = false;
-      //reset timer
-      //clear buttons
       clearBTNs();
       return;
     }
     if (msg.type == 'win') {
-      console.log(`CONGRATS! user at ${msg.position} position won the game`);
+      console.log(`CONGRATS! user (${msg.userName}) at ${msg.position} position won the game`);
       if (msg.position == position) {
         myBalance += msg.pot!;
       }
       (document.querySelector('#balance') as HTMLDivElement).innerHTML = `${myBalance}`;
-
+      sdProfileCreater(msg.userList);
       reset();
       showOnlineUsers(msg.userList!);
       (document.querySelector('#alert') as HTMLDivElement).innerHTML = `alert for debugging: ${msg.userName}@${msg.position} won the game!`;
@@ -437,6 +435,46 @@ const createProfiles = () => {
   }
 }
 createProfiles();
+
+const sdProfileCreater = (userList: any) => {
+  (document.querySelector('#showdownWindow') as HTMLDivElement).classList.remove("d-none");
+  let sdProfiles = (document.querySelector('#sdProfiles') as HTMLDivElement);
+  sdProfiles.innerHTML = "";
+  userList.forEach((user: any) => {
+    sdProfiles.innerHTML +=
+      `
+      <div class="col-4">
+        <div class="sdProfile pb-3 ps-2" id="sdP${user.position}" ${position == user.position ? 'style="background-color: rgba(50, 32, 216, 0.781);"' : ''}>
+          <div class="row">
+
+            <div class="col-4 d-flex align-items-center">
+              <span class="display-6">${user.userName}</span>
+            </div>
+
+            <div class="col-4">
+              <div class="w-100 pt-3 d-flex align-items-center" id="cards">
+                <img id="firstCard" src="src/images/${user.hand[0][0]}/${user.hand[0]}.png" class="w-50 h-50" style="float: left; transform: rotate(-20deg); transform: translate(10%);" alt="">
+                <img id="secondCard" src="src/images/${user.hand[1][0]}/${user.hand[1]}.png" class="w-50 h-50" style="transform: rotate(20deg) translate(-10%);" alt="">
+              </div>
+            </div>
+
+            <div class="col-4 d-flex align-items-center">
+              <div class="${position == user.position ? '' : 'd-none'} my-auto h-50">
+                <p style="font-size: 1.5rem; margin-bottom: 0;">Winner</p>
+                <p>+1000</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  setTimeout(() => {
+
+  }, 7500);
+  (document.querySelector('#showdownWindow') as HTMLDivElement).classList.add("d-none");
+}
 
 (document.querySelector('#login') as HTMLButtonElement).addEventListener('click', (e) => {
   e.preventDefault()
