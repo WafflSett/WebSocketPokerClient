@@ -201,15 +201,15 @@ img {
     box-shadow: none;
 }
 
-#unready {
-    background-color: rgb(87, 76, 14);
+#unready, .disabledbtn {
+    background-color: rgb(87, 76, 14)!important;
     transition: .3s;
-    color: white;
+    color: white!important;
     border-radius: 2em 1em 4em / 0.5em 3em;
 }
 
-#unready:hover {
-    background-color: rgb(126, 110, 18);
+#unready:hover, .disabledbtn:hover {
+    background-color: rgb(126, 110, 18)!important;
     transition: .3s;
     letter-spacing: .4rem;
 }

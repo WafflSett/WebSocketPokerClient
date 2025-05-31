@@ -126,12 +126,14 @@ const connect = () => {
           callBtn.textContent = "Call";
 
           callBtn.addEventListener('click', () => {
-            bet(msg.runningBet! - myBet);
-            myBet = msg.runningBet! - myBet;
-            console.log('call');
-            timerOn = false;
-            updateBalance();
-            clearBTNs();
+            if (myBalance<=0 || myBalance-(msg.runningBet! - myBet)>=0) {
+              bet(msg.runningBet! - myBet);
+              myBet = msg.runningBet! - myBet;
+              console.log('call');
+              timerOn = false;
+              updateBalance();
+              clearBTNs();
+            }
           });
           btnDiv.appendChild(callBtn);
 
@@ -141,7 +143,7 @@ const connect = () => {
           raiseBtn.textContent = 'Raise';
 
           raiseBtn.addEventListener('click', () => {
-            if (Number(betAmount.value!) > msg.runningBet!) {
+            if (myBalance>0 && Number(betAmount.value!) > msg.runningBet! && myBalance-Number(betAmount.value!)>=0) {
               bet(Number(betAmount.value!));
               myBet = Number(betAmount.value);
               console.log('raise');
@@ -150,6 +152,9 @@ const connect = () => {
               clearBTNs();
             }
           });
+          if (myBalance<=0) {
+            raiseBtn.classList.add('disabledbtn');
+          }
           (document.querySelector('#betField') as HTMLDivElement).append(raiseBtn);
 
           betAmount.min = String(msg.runningBet);
@@ -166,7 +171,7 @@ const connect = () => {
           betBtn.textContent = 'Bet';
 
           betBtn.addEventListener('click', () => {
-            if (Number(betAmount.value!) > 0) {
+            if (myBalance>0 && Number(betAmount.value!) > 0 && myBalance-Number(betAmount.value!)>=0) {
               bet(Number(betAmount.value!));
               myBet = Number(betAmount.value!);
               console.log('bet');
@@ -175,6 +180,9 @@ const connect = () => {
               clearBTNs();
             }
           });
+          if (myBalance<=0) {
+            betBtn.classList.add('disabledbtn');
+          }
           (document.querySelector('#betField') as HTMLDivElement).append(betBtn);
 
           const checkBtn = document.createElement('button');
@@ -195,12 +203,17 @@ const connect = () => {
         allinBTN.id = 'allin-btn';
         allinBTN.textContent = 'All In';
         allinBTN.addEventListener('click', () => {
-          allIn();
-          myBalance = 0;
-          timerOn = false;
-          (document.querySelector('#balance') as HTMLDivElement).innerHTML = "0 Ft";
-          clearBTNs();
+          if (myBalance>0) {
+            allIn();
+            myBalance = 0;
+            timerOn = false;
+            (document.querySelector('#balance') as HTMLDivElement).innerHTML = "0 Ft";
+            clearBTNs();
+          }
         })
+        if (myBalance<=0) {
+          allinBTN.classList.add('disabledbtn');
+        }
         btnDiv.appendChild(allinBTN);
 
         betAmount.classList.remove('d-none');
