@@ -275,11 +275,15 @@ const connect = () => {
       if (msg.position == position) {
         myBalance += msg.pot!;
       }
-      (document.querySelector('#balance') as HTMLDivElement).innerHTML = `${myBalance}`;
-      sdProfileCreater(msg.userList);
-      reset();
-      showOnlineUsers(msg.userList!);
-      (document.querySelector('#alert') as HTMLDivElement).innerHTML = `alert for debugging: ${msg.userName}@${msg.position} won the game!`;
+      (document.querySelector('#balance') as HTMLDivElement).innerHTML = `${myBalance} Ft`;
+      sdProfileCreater(msg);
+      setTimeout(() => {
+        (document.querySelector('#showdownWindow') as HTMLDivElement).classList.add("d-none");
+        console.log("asd");
+        reset();
+        showOnlineUsers(msg.userList!);
+        // (document.querySelector('#alert') as HTMLDivElement).innerHTML = `alert for debugging: ${msg.userName}@${msg.position} won the game!`;
+      }, 7500);
     }
   }
 
@@ -449,7 +453,9 @@ const createProfiles = () => {
 }
 createProfiles();
 
-const sdProfileCreater = (userList: any) => {
+const sdProfileCreater = (msg:any) => {
+  let pot = msg.pot;
+  let userList = msg.userList;
   (document.querySelector('#showdownWindow') as HTMLDivElement).classList.remove("d-none");
   let sdProfiles = (document.querySelector('#sdProfiles') as HTMLDivElement);
   sdProfiles.innerHTML = "";
@@ -457,7 +463,7 @@ const sdProfileCreater = (userList: any) => {
     sdProfiles.innerHTML +=
       `
       <div class="col-4">
-        <div class="sdProfile pb-3 ps-2" id="sdP${user.position}" ${position == user.position ? 'style="background-color: rgba(50, 32, 216, 0.781);"' : ''}>
+        <div class="sdProfile pb-3 ps-2" id="sdP${user.position}" ${msg.position == user.position ? 'style="background-color: rgba(50, 32, 216, 0.781);"' : ''}>
           <div class="row">
 
             <div class="col-4 d-flex align-items-center">
@@ -472,9 +478,9 @@ const sdProfileCreater = (userList: any) => {
             </div>
 
             <div class="col-4 d-flex align-items-center">
-              <div class="${position == user.position ? '' : 'd-none'} my-auto h-50">
+              <div class="${msg.position == user.position ? '' : 'd-none'} my-auto h-50">
                 <p style="font-size: 1.5rem; margin-bottom: 0;">Winner</p>
-                <p>+1000</p>
+                <p>+${pot}</p>
               </div>
             </div>
 
@@ -483,10 +489,6 @@ const sdProfileCreater = (userList: any) => {
       </div>
     `;
   });
-  setTimeout(() => {
-
-  }, 7500);
-  (document.querySelector('#showdownWindow') as HTMLDivElement).classList.add("d-none");
 }
 
 (document.querySelector('#login') as HTMLButtonElement).addEventListener('click', (e) => {
@@ -523,6 +525,7 @@ const reset = () => {
   (document.querySelector('#firstCard') as HTMLImageElement).src = "";
   (document.querySelector('#secondCard') as HTMLImageElement).src = "";
   (document.querySelector('.table-container') as HTMLDivElement).innerHTML = `<img src="src/images/table.png" class="table-image" alt="table"><p id="pot"></p><div id="communityCards"></div>`;
+  potP = document.querySelector('#pot') as HTMLParagraphElement;
   createProfiles();
 }
 
