@@ -9,6 +9,7 @@ let potP = document.querySelector("#pot")
 let btnDiv = document.querySelector("#action-btns")
 let betAmount = document.querySelector("#bet-amount")
 let waitingForReady = document.querySelector("#waitingForReady")
+let loginBtn = document.querySelector("#login")
 let myBet = 0
 let timerOn = false
 let myBalance
@@ -57,6 +58,7 @@ const connect = () => {
       return
     }
     if (msg.type == "start") {
+      login.disabled = true;
       document.querySelector("#balanceDiv").classList.remove("d-none")
       document.querySelectorAll(".ready-btns").forEach(btn => {
         btn.classList.add("d-none")
@@ -237,7 +239,7 @@ const connect = () => {
           clearBTNs()
         })
       } else {
-        let nextUserName = msg.userList.find(x=>x.position == msg.position).userName;
+        let nextUserName = msg.userList.find(x => x.position == msg.position).userName;
         document.querySelector("#table-count").innerHTML = `<div class="display-6">It's ${nextUserName}'s turn! Please wait!</div>`;
         btnDiv.classList.add("d-none")
         // betAmount.classList.add('d-none');
@@ -528,6 +530,7 @@ unreadyBtn.addEventListener("click", () => {
 const reset = () => {
   timerOn = false
   clearBTNs()
+  login.disabled = true;
   document.querySelector("#balanceDiv").classList.add("d-none")
   readyBtn.classList.remove("d-none")
   betAmount.classList.add("d-none")
