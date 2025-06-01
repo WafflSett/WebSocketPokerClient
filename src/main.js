@@ -555,7 +555,6 @@ document.querySelector("#logout").addEventListener("click", () => {
 
 const smallWindow = () => {
   let login = document.querySelector("#loginContainer")
-  let waiting = document.querySelector("#waitingMessages")
   let main = document.querySelector("#main")
   let windowSizeAlert = document.querySelector("#windowSizeAlert")
   if (
@@ -565,12 +564,10 @@ const smallWindow = () => {
   ) {
     if (ws != null) {
       disconnect()
-      login.classList.remove("d-none")
     }
-    waiting.classList.add("d-none")
+    login.classList.add("d-none")
     main.classList.add("d-none")
     windowSizeAlert.classList.remove("d-none")
-    document.querySelector("#loginContainer").classList.add("d-none")
   } else {
     if (ws == null) {
       login.classList.remove("d-none")
