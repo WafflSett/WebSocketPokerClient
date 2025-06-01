@@ -9,7 +9,6 @@ let userName: string;
 // let users : {userId:number, userName:string}[] = [];
 let tableId: number;
 let position: number;
-let waitingMessage = document.querySelector('#waitingMessage') as HTMLParagraphElement;
 let potP = document.querySelector('#pot') as HTMLParagraphElement;
 let btnDiv = (document.querySelector('#action-btns') as HTMLDivElement);
 let betAmount: HTMLInputElement = (document.querySelector('#bet-amount') as HTMLInputElement);
@@ -126,7 +125,7 @@ const connect = () => {
           callBtn.textContent = "Call";
 
           callBtn.addEventListener('click', () => {
-            if (myBalance<=0 || myBalance-(msg.runningBet! - myBet)>=0) {
+            if (myBalance <= 0 || myBalance - (msg.runningBet! - myBet) >= 0) {
               bet(msg.runningBet! - myBet);
               myBet = msg.runningBet! - myBet;
               console.log('call');
@@ -143,7 +142,7 @@ const connect = () => {
           raiseBtn.textContent = 'Raise';
 
           raiseBtn.addEventListener('click', () => {
-            if (myBalance>0 && Number(betAmount.value!) > msg.runningBet! && myBalance-Number(betAmount.value!)>=0) {
+            if (myBalance > 0 && Number(betAmount.value!) > msg.runningBet! && myBalance - Number(betAmount.value!) >= 0) {
               bet(Number(betAmount.value!));
               myBet = Number(betAmount.value);
               console.log('raise');
@@ -152,7 +151,7 @@ const connect = () => {
               clearBTNs();
             }
           });
-          if (myBalance<=0) {
+          if (myBalance <= 0) {
             raiseBtn.classList.add('disabledbtn');
           }
           (document.querySelector('#betField') as HTMLDivElement).append(raiseBtn);
@@ -171,7 +170,7 @@ const connect = () => {
           betBtn.textContent = 'Bet';
 
           betBtn.addEventListener('click', () => {
-            if (myBalance>0 && Number(betAmount.value!) > 0 && myBalance-Number(betAmount.value!)>=0) {
+            if (myBalance > 0 && Number(betAmount.value!) > 0 && myBalance - Number(betAmount.value!) >= 0) {
               bet(Number(betAmount.value!));
               myBet = Number(betAmount.value!);
               console.log('bet');
@@ -180,7 +179,7 @@ const connect = () => {
               clearBTNs();
             }
           });
-          if (myBalance<=0) {
+          if (myBalance <= 0) {
             betBtn.classList.add('disabledbtn');
           }
           (document.querySelector('#betField') as HTMLDivElement).append(betBtn);
@@ -203,7 +202,7 @@ const connect = () => {
         allinBTN.id = 'allin-btn';
         allinBTN.textContent = 'All In';
         allinBTN.addEventListener('click', () => {
-          if (myBalance>0) {
+          if (myBalance > 0) {
             allIn();
             myBalance = 0;
             timerOn = false;
@@ -211,7 +210,7 @@ const connect = () => {
             clearBTNs();
           }
         })
-        if (myBalance<=0) {
+        if (myBalance <= 0) {
           allinBTN.classList.add('disabledbtn');
         }
         btnDiv.appendChild(allinBTN);
@@ -453,7 +452,7 @@ const createProfiles = () => {
 }
 createProfiles();
 
-const sdProfileCreater = (msg:any) => {
+const sdProfileCreater = (msg: any) => {
   let pot = msg.pot;
   let userList = msg.userList;
   (document.querySelector('#showdownWindow') as HTMLDivElement).classList.remove("d-none");
