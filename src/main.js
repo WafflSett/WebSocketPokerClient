@@ -50,9 +50,7 @@ const connect = () => {
 
       document.querySelector("#table").classList.remove("d-none")
       document.querySelector("#main").classList.remove("d-none")
-      document.querySelector(
-        "#table-count"
-      ).innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`
+      document.querySelector("#table-count").innerHTML = `<div class="display-6">Welcome to Table ${msg.tableId}</div>`
       return
     }
     if (msg.type == "join") {
@@ -120,6 +118,7 @@ const connect = () => {
       })
       displayBets(msg.userList)
       if (msg.position == position) {
+        document.querySelector("#table-count").innerHTML = `<div class="display-6">It's your turn!</div>`
         document.querySelector("#balance").innerHTML = `${myBalance} Ft`
         btnDiv.classList.remove("d-none")
         startTimer()
@@ -244,6 +243,8 @@ const connect = () => {
           clearBTNs()
         })
       } else {
+        let nextUserName = msg.userList.find(x=>x.position == msg.position).userName;
+        document.querySelector("#table-count").innerHTML = `<div class="display-6">It's ${nextUserName}'s turn! Please wait!</div>`;
         btnDiv.classList.add("d-none")
         // betAmount.classList.add('d-none');
         clearBTNs()
