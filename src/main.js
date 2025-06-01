@@ -135,13 +135,15 @@ const connect = () => {
           callBtn.textContent = "Call"
 
           callBtn.addEventListener("click", () => {
-            if (myBalance <= 0 || myBalance - (msg.runningBet - myBet) >= 0) {
+            if (myBalance < 0 || myBalance - (msg.runningBet - myBet) >= 0) {
               bet(msg.runningBet - myBet)
               myBet = msg.runningBet - myBet
               console.log("call")
               timerOn = false
               updateBalance()
               clearBTNs()
+            }else{
+              check();
             }
           })
           btnDiv.appendChild(callBtn)
@@ -317,20 +319,6 @@ const connect = () => {
 const updateBalance = () => {
   myBalance -= myBet
   document.querySelector("#balance").innerHTML = `${myBalance} Ft`
-}
-
-const clearBTNs = () => {
-  btnDiv.innerHTML = ""
-  betAmount.classList.add("d-none")
-  // (document.querySelector('#balanceDiv') as HTMLDivElement).classList.add("d-none");
-  let prevRaise = document.querySelector("#raise-btn")
-  if (prevRaise != null) {
-    prevRaise.remove()
-  }
-  prevRaise = document.querySelector("#bet-btn")
-  if (prevRaise != null) {
-    prevRaise.remove()
-  }
 }
 
 const fold = () => {
@@ -604,4 +592,20 @@ window.onbeforeunload = function() {
   // if (ws != null) {
     disconnect();
   // }
+}
+
+
+const clearBTNs = () => {
+  btnDiv.innerHTML = ""
+  betAmount.classList.add("d-none")
+  unreadyBtn.classList.add("d-none")
+  // (document.querySelector('#balanceDiv') as HTMLDivElement).classList.add("d-none");
+  let prevRaise = document.querySelector("#raise-btn")
+  if (prevRaise != null) {
+    prevRaise.remove()
+  }
+  prevRaise = document.querySelector("#bet-btn")
+  if (prevRaise != null) {
+    prevRaise.remove()
+  }
 }
