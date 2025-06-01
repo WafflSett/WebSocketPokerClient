@@ -18,7 +18,7 @@ let timerOn = false
 let myBalance
 
 const connect = () => {
-  ws = new WebSocket("https://websocketpokerserver-660005682738.europe-west1.run.app:8080")
+  ws = new WebSocket("https://websocketpokerserver-660005682738.europe-west1.run.app")
 
   ws.onopen = () => {
     userName = document.querySelector("#name").value
