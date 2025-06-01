@@ -13,6 +13,7 @@ let potP = document.querySelector('#pot') as HTMLParagraphElement;
 let btnDiv = (document.querySelector('#action-btns') as HTMLDivElement);
 let betAmount: HTMLInputElement = (document.querySelector('#bet-amount') as HTMLInputElement);
 let waitingForReady = (document.querySelector("#waitingForReady") as HTMLParagraphElement)
+let logout = (document.querySelector("#logout") as HTMLButtonElement)
 let myBet: number = 0;
 let timerOn = false;
 let myBalance: number;
@@ -60,6 +61,7 @@ const connect = () => {
       return;
     }
     if (msg.type == 'start') {
+      logout.disabled = true;
       (document.querySelector('#balanceDiv') as HTMLDivElement).classList.remove("d-none");
       document.querySelectorAll('.ready-btns').forEach((btn: any) => {
         btn.classList.add('d-none');
@@ -527,6 +529,7 @@ unreadyBtn.addEventListener('click', () => {
 const reset = () => {
   timerOn = false;
   clearBTNs();
+  logout.disabled = false;
   (document.querySelector('#balanceDiv') as HTMLDivElement).classList.add("d-none");
   readyBtn.classList.remove('d-none');
   betAmount.classList.add('d-none');
