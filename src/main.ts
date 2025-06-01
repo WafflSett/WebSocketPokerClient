@@ -19,7 +19,7 @@ let timerOn = false;
 let myBalance: number;
 
 const connect = () => {
-  ws = new WebSocket('ws://localhost:8081');
+  ws = new WebSocket('ws://localhost:8080');
 
   ws.onopen = () => {
     userName = (document.querySelector('#name') as HTMLInputElement).value;
@@ -126,7 +126,7 @@ const connect = () => {
           callBtn.textContent = "Call";
 
           callBtn.addEventListener('click', () => {
-            if (myBalance<=0 || myBalance-(msg.runningBet! - myBet)>=0) {
+            if (myBalance <= 0 || myBalance - (msg.runningBet! - myBet) >= 0) {
               bet(msg.runningBet! - myBet);
               myBet = msg.runningBet! - myBet;
               console.log('call');
@@ -143,7 +143,7 @@ const connect = () => {
           raiseBtn.textContent = 'Raise';
 
           raiseBtn.addEventListener('click', () => {
-            if (myBalance>0 && Number(betAmount.value!) > msg.runningBet! && myBalance-Number(betAmount.value!)>=0) {
+            if (myBalance > 0 && Number(betAmount.value!) > msg.runningBet! && myBalance - Number(betAmount.value!) >= 0) {
               bet(Number(betAmount.value!));
               myBet = Number(betAmount.value);
               console.log('raise');
@@ -152,7 +152,7 @@ const connect = () => {
               clearBTNs();
             }
           });
-          if (myBalance<=0) {
+          if (myBalance <= 0) {
             raiseBtn.classList.add('disabledbtn');
           }
           (document.querySelector('#betField') as HTMLDivElement).append(raiseBtn);
@@ -171,7 +171,7 @@ const connect = () => {
           betBtn.textContent = 'Bet';
 
           betBtn.addEventListener('click', () => {
-            if (myBalance>0 && Number(betAmount.value!) > 0 && myBalance-Number(betAmount.value!)>=0) {
+            if (myBalance > 0 && Number(betAmount.value!) > 0 && myBalance - Number(betAmount.value!) >= 0) {
               bet(Number(betAmount.value!));
               myBet = Number(betAmount.value!);
               console.log('bet');
@@ -180,7 +180,7 @@ const connect = () => {
               clearBTNs();
             }
           });
-          if (myBalance<=0) {
+          if (myBalance <= 0) {
             betBtn.classList.add('disabledbtn');
           }
           (document.querySelector('#betField') as HTMLDivElement).append(betBtn);
@@ -203,7 +203,7 @@ const connect = () => {
         allinBTN.id = 'allin-btn';
         allinBTN.textContent = 'All In';
         allinBTN.addEventListener('click', () => {
-          if (myBalance>0) {
+          if (myBalance > 0) {
             allIn();
             myBalance = 0;
             timerOn = false;
@@ -211,7 +211,7 @@ const connect = () => {
             clearBTNs();
           }
         })
-        if (myBalance<=0) {
+        if (myBalance <= 0) {
           allinBTN.classList.add('disabledbtn');
         }
         btnDiv.appendChild(allinBTN);
@@ -277,13 +277,24 @@ const connect = () => {
       }
       (document.querySelector('#balance') as HTMLDivElement).innerHTML = `${myBalance} Ft`;
       sdProfileCreater(msg);
-      setTimeout(() => {
+
+      (document.querySelector('#clearTimeout') as HTMLButtonElement).addEventListener('click', () => {
+        clearTimeout(timeout);
+        console.log("Timeout cleared");
+      });
+
+      function endShowdown() {
         (document.querySelector('#showdownWindow') as HTMLDivElement).classList.add("d-none");
-        console.log("asd");
         reset();
         showOnlineUsers(msg.userList!);
-        // (document.querySelector('#alert') as HTMLDivElement).innerHTML = `alert for debugging: ${msg.userName}@${msg.position} won the game!`;
-      }, 7500);
+      }
+      let timeout: ReturnType<typeof setTimeout> = setTimeout(endShowdown, 7500);
+      (document.querySelector('#clearTimeout') as HTMLButtonElement).addEventListener('click', () => {
+        clearTimeout(timeout);
+        endShowdown();
+      });
+
+
     }
   }
 
@@ -300,7 +311,8 @@ const updateBalance = () => {
 const clearBTNs = () => {
   btnDiv.innerHTML = "";
   betAmount.classList.add('d-none');
-  // (document.querySelector('#balanceDiv') as HTMLDivElement).classList.add("d-none");
+  (document.querySelector('#unready') as HTMLDivElement).classList.add("d-none");
+  // (document.querySelector('#balanceDiv') as HTMLDivElement).classList.add("d-none");*
   let prevRaise = (document.querySelector('#raise-btn') as HTMLDivElement);
   if (prevRaise != null) {
     prevRaise.remove();
@@ -453,7 +465,7 @@ const createProfiles = () => {
 }
 createProfiles();
 
-const sdProfileCreater = (msg:any) => {
+const sdProfileCreater = (msg: any) => {
   let pot = msg.pot;
   let userList = msg.userList;
   (document.querySelector('#showdownWindow') as HTMLDivElement).classList.remove("d-none");
@@ -562,7 +574,5 @@ window.addEventListener("fullscreenchange", () => {
 })
 
 window.onbeforeunload = function () {
-  if (ws != null) {
-    disconnect();
-  }
+  disconnect();
 };
