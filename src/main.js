@@ -300,6 +300,11 @@ const connect = () => {
       }
       document.querySelector("#balance").innerHTML = `${myBalance} Ft`
       sdProfileCreater(msg)
+      const endShowdown = () => {
+        document.querySelector("#showdownWindow").classList.add("d-none")
+        reset()
+        showOnlineUsers(msg.userList)
+      }
       let timeout = setTimeout(endShowdown, 7500);
       document.querySelector('#clearTimeout').addEventListener('click', () => {
         clearTimeout(timeout);
@@ -313,11 +318,6 @@ const connect = () => {
   }
 }
 
-const endShowdown = () => {
-  document.querySelector("#showdownWindow").classList.add("d-none")
-  reset()
-  showOnlineUsers(msg.userList)
-}
 
 const updateBalance = () => {
   myBalance -= myBet
