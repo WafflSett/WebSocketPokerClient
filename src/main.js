@@ -9,7 +9,7 @@ let potP = document.querySelector("#pot")
 let btnDiv = document.querySelector("#action-btns")
 let betAmount = document.querySelector("#bet-amount")
 let waitingForReady = document.querySelector("#waitingForReady")
-let loginBtn = document.querySelector("#login")
+let logoutBtn = document.querySelector("#logout")
 let myBet = 0
 let timerOn = false
 let myBalance
@@ -49,7 +49,6 @@ const connect = () => {
       return
     }
     if (msg.type == "join") {
-      // if (msg.inProgress == true) {console.log("match already in progress, please wait")}
       showOnlineUsers(msg.userList)
       return
     }
@@ -58,7 +57,7 @@ const connect = () => {
       return
     }
     if (msg.type == "start") {
-      login.disabled = true;
+      logoutBtn.disabled = true;
       document.querySelector("#balanceDiv").classList.remove("d-none")
       document.querySelectorAll(".ready-btns").forEach(btn => {
         btn.classList.add("d-none")
@@ -530,7 +529,7 @@ unreadyBtn.addEventListener("click", () => {
 const reset = () => {
   timerOn = false
   clearBTNs()
-  login.disabled = true;
+  logoutBtn.disabled = false;
   document.querySelector("#balanceDiv").classList.add("d-none")
   readyBtn.classList.remove("d-none")
   betAmount.classList.add("d-none")
