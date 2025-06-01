@@ -2,7 +2,7 @@
 // import "./background.scss"
 // import "../node_modules/bootstrap/dist/css/bootstrap.min.css"
 
-// console.log("js loaded");
+console.log("js loaded");
 
 
 let ws
@@ -21,12 +21,12 @@ let myBalance
 
 const connect = () => {
   ws = new WebSocket("https://websocketpokerserver-660005682738.europe-west1.run.app")
-  // console.log("ws connecting!");
+  console.log("ws connecting!");
 
   ws.onopen = () => {
     userName = document.querySelector("#name").value
 
-    // console.log("Connected to server!")
+    console.log("Connected to server!")
     const msg = {
       type: "init",
       userId: -1,
@@ -41,7 +41,7 @@ const connect = () => {
 
   ws.onmessage = event => {
     const msg = JSON.parse(event.data)
-    // console.log(msg)
+    console.log(msg)
     if (msg.type == "init") {
       userId = msg.userId
       tableId = msg.tableId
@@ -57,7 +57,7 @@ const connect = () => {
     }
     if (msg.type == "join") {
       if (msg.inProgress == true) {
-        // console.log("match already in progress, please wait")
+        console.log("match already in progress, please wait")
       }
       showOnlineUsers(msg.userList)
       return
@@ -94,7 +94,7 @@ const connect = () => {
       return
     }
     if (msg.type == "ready") {
-      // console.log(`Ready: ${msg.ready}/${msg.balance} players are ready`)
+      console.log(`Ready: ${msg.ready}/${msg.balance} players are ready`)
       waitingForReady.classList.remove("d-none")
       waitingForReady.innerHTML = `${msg.ready}/${msg.balance} players are ready`
     }
@@ -137,7 +137,7 @@ const connect = () => {
             if (myBalance < 0 || myBalance - (msg.runningBet - myBet) >= 0) {
               bet(msg.runningBet - myBet)
               myBet = msg.runningBet - myBet
-              // console.log("call")
+              console.log("call")
               timerOn = false
               updateBalance()
               clearBTNs()
@@ -160,7 +160,7 @@ const connect = () => {
             ) {
               bet(Number(betAmount.value))
               myBet = Number(betAmount.value)
-              // console.log("raise")
+              console.log("raise")
               timerOn = false
               updateBalance()
               clearBTNs()
@@ -191,7 +191,7 @@ const connect = () => {
             ) {
               bet(Number(betAmount.value))
               myBet = Number(betAmount.value)
-              // console.log("bet")
+              console.log("bet")
               timerOn = false
               updateBalance()
               clearBTNs()
@@ -292,7 +292,9 @@ const connect = () => {
       return
     }
     if (msg.type == "win") {
-      // console.log(`CONGRATS! user (${msg.userName}) at ${msg.position} position won the game`)
+      console.log(
+        `CONGRATS! user (${msg.userName}) at ${msg.position} position won the game`
+      )
       if (msg.position == position) {
         myBalance += msg.pot
       }
@@ -387,7 +389,7 @@ const startTimer = async () => {
 
 const disconnect = () => {
   if (ws != null) {
-    // console.log(ws)
+    console.log(ws)
 
     const msg = {
       type: "disc",
@@ -396,7 +398,7 @@ const disconnect = () => {
       position: position
     }
     ws.send(JSON.stringify(msg))
-    // console.log("Disconnected from server")
+    console.log("Disconnected from server")
     ws = null
     userId = -1
     userName = ""
