@@ -601,7 +601,7 @@ window.addEventListener("fullscreenchange", () => {
 })
 
 window.onbeforeunload = function() {
-  if (ws != null) {
-    disconnect()
-  }
+  // if (ws != null) {
+    disconnect();
+  // }
 }
