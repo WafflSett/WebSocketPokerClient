@@ -552,9 +552,7 @@ const smallWindow = () => {
   let main = document.querySelector("#main")
   let windowSizeAlert = document.querySelector("#windowSizeAlert")
   if (
-    window.innerWidth < 1700 ||
-    window.outerWidth < 1600 ||
-    window.innerHeight < 800 || window.outerHeight < 800
+    window.innerWidth < 1700 || window.innerHeight < 800 
   ) {
     if (ws != null) {
       disconnect()
