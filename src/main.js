@@ -22,8 +22,8 @@ let myBalance
 
 const connect = () => {
   ws = new WebSocket("https://websocketpokerserver-660005682738.europe-west1.run.app")
-    console.log("ws connecting!");
-    
+  console.log("ws connecting!");
+
   ws.onopen = () => {
     userName = document.querySelector("#name").value
 
@@ -142,7 +142,7 @@ const connect = () => {
               timerOn = false
               updateBalance()
               clearBTNs()
-            }else{
+            } else {
               check();
             }
           })
@@ -301,19 +301,23 @@ const connect = () => {
       }
       document.querySelector("#balance").innerHTML = `${myBalance} Ft`
       sdProfileCreater(msg)
-      setTimeout(() => {
-        document.querySelector("#showdownWindow").classList.add("d-none")
-        console.log("asd")
-        reset()
-        showOnlineUsers(msg.userList)
-        // (document.querySelector('#alert') as HTMLDivElement).innerHTML = `alert for debugging: ${msg.userName}@${msg.position} won the game!`;
-      }, 7500)
+      let timeout = setTimeout(endShowdown, 7500);
+      document.querySelector('#clearTimeout').addEventListener('click', () => {
+        clearTimeout(timeout);
+        endShowdown();
+      });
     }
   }
 
   ws.onclose = () => {
     disconnect()
   }
+}
+
+const endShowdown = () => {
+  document.querySelector("#showdownWindow").classList.add("d-none")
+  reset()
+  showOnlineUsers(msg.userList)
 }
 
 const updateBalance = () => {
@@ -474,11 +478,10 @@ const sdProfileCreater = msg => {
   userList.forEach(user => {
     sdProfiles.innerHTML += `
       <div class="col-4">
-        <div class="sdProfile pb-3 ps-2" id="sdP${user.position}" ${
-      msg.position == user.position
+        <div class="sdProfile pb-3 ps-2" id="sdP${user.position}" ${msg.position == user.position
         ? 'style="background-color: rgba(50, 32, 216, 0.781);"'
         : ""
-    }>
+      }>
           <div class="row">
 
             <div class="col-4 d-flex align-items-center">
@@ -487,19 +490,16 @@ const sdProfileCreater = msg => {
 
             <div class="col-4">
               <div class="w-100 pt-3 d-flex align-items-center" id="cards">
-                <img id="firstCard" src="src/images/${user.hand[0][0]}/${
-      user.hand[0]
-    }.png" class="w-50 h-50" style="float: left; transform: rotate(-20deg); transform: translate(10%);" alt="">
-                <img id="secondCard" src="src/images/${user.hand[1][0]}/${
-      user.hand[1]
-    }.png" class="w-50 h-50" style="transform: rotate(20deg) translate(-10%);" alt="">
+                <img id="firstCard" src="src/images/${user.hand[0][0]}/${user.hand[0]
+      }.png" class="w-50 h-50" style="float: left; transform: rotate(-20deg); transform: translate(10%);" alt="">
+                <img id="secondCard" src="src/images/${user.hand[1][0]}/${user.hand[1]
+      }.png" class="w-50 h-50" style="transform: rotate(20deg) translate(-10%);" alt="">
               </div>
             </div>
 
             <div class="col-4 d-flex align-items-center">
-              <div class="${
-                msg.position == user.position ? "" : "d-none"
-              } my-auto h-50">
+              <div class="${msg.position == user.position ? "" : "d-none"
+      } my-auto h-50">
                 <p style="font-size: 1.5rem; margin-bottom: 0;">Winner</p>
                 <p>+${pot}</p>
               </div>
@@ -588,9 +588,9 @@ window.addEventListener("fullscreenchange", () => {
   smallWindow()
 })
 
-window.onbeforeunload = function() {
+window.onbeforeunload = function () {
   // if (ws != null) {
-    disconnect();
+  disconnect();
   // }
 }
 
