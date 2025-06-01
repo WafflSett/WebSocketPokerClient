@@ -9,7 +9,6 @@ let userName: string;
 // let users : {userId:number, userName:string}[] = [];
 let tableId: number;
 let position: number;
-let waitingMessage = document.querySelector('#waitingMessage') as HTMLParagraphElement;
 let potP = document.querySelector('#pot') as HTMLParagraphElement;
 let btnDiv = (document.querySelector('#action-btns') as HTMLDivElement);
 let betAmount: HTMLInputElement = (document.querySelector('#bet-amount') as HTMLInputElement);
