@@ -1,10 +1,4 @@
-// import "./style.css"
-// import "./background.scss"
-// import "../node_modules/bootstrap/dist/css/bootstrap.min.css"
-
 // console.log("js loaded");
-
-
 let ws
 let userId
 let userName
@@ -157,7 +151,7 @@ const connect = () => {
             ) {
               bet(Number(betAmount.value))
               myBet = Number(betAmount.value)
-              console.log("raise")
+              // console.log("raise")
               timerOn = false
               updateBalance()
               clearBTNs()
@@ -188,7 +182,7 @@ const connect = () => {
             ) {
               bet(Number(betAmount.value))
               myBet = Number(betAmount.value)
-              console.log("bet")
+              // console.log("bet")
               timerOn = false
               updateBalance()
               clearBTNs()
@@ -291,9 +285,7 @@ const connect = () => {
       return
     }
     if (msg.type == "win") {
-      console.log(
-        `CONGRATS! user (${msg.userName}) at ${msg.position} position won the game`
-      )
+      // console.log(`CONGRATS! user (${msg.userName}) at ${msg.position} position won the game`)
       if (msg.position == position) {
         myBalance += msg.pot
       }
@@ -388,8 +380,7 @@ const startTimer = async () => {
 
 const disconnect = () => {
   if (ws != null) {
-    console.log(ws)
-
+    // console.log(ws)
     const msg = {
       type: "disc",
       userId: userId,
@@ -397,7 +388,7 @@ const disconnect = () => {
       position: position
     }
     ws.send(JSON.stringify(msg))
-    console.log("Disconnected from server")
+    // console.log("Disconnected from server")
     ws = null
     userId = -1
     userName = ""
@@ -556,7 +547,6 @@ document.querySelector("#logout").addEventListener("click", () => {
 
 const smallWindow = () => {
   let login = document.querySelector("#loginContainer")
-  let waiting = document.querySelector("#waitingMessages")
   let main = document.querySelector("#main")
   let windowSizeAlert = document.querySelector("#windowSizeAlert")
   if (
@@ -566,12 +556,10 @@ const smallWindow = () => {
   ) {
     if (ws != null) {
       disconnect()
-      login.classList.remove("d-none")
     }
-    waiting.classList.add("d-none")
+    login.classList.add("d-none")
     main.classList.add("d-none")
     windowSizeAlert.classList.remove("d-none")
-    document.querySelector("#loginContainer").classList.add("d-none")
   } else {
     if (ws == null) {
       login.classList.remove("d-none")
