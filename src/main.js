@@ -380,7 +380,7 @@ const startTimer = async () => {
 }
 
 const disconnect = () => {
-  if (ws != null) {
+  // if (ws != null) {
     // console.log(ws)
     const msg = {
       type: "disc",
@@ -399,7 +399,7 @@ const disconnect = () => {
     document.querySelector("#navForm").classList.add("d-none")
     document.querySelector("#loginContainer").classList.remove("d-none")
     reset()
-  }
+  // }
 }
 
 const ready = () => {
@@ -577,7 +577,7 @@ window.addEventListener("fullscreenchange", () => {
   smallWindow()
 })
 
-window.onbeforeunload = function () {
+window.onbeforeunload = () => {
   // if (ws != null) {
   disconnect();
   // }
