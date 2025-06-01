@@ -19,7 +19,7 @@ let timerOn = false;
 let myBalance: number;
 
 const connect = () => {
-  ws = new WebSocket('ws://localhost:8081');
+  ws = new WebSocket('https://h6pxmxukad.eu-central-1.awsapprunner.com:8080');
 
   ws.onopen = () => {
     userName = (document.querySelector('#name') as HTMLInputElement).value;
