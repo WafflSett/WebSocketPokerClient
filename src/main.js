@@ -2,6 +2,9 @@
 // import "./background.scss"
 // import "../node_modules/bootstrap/dist/css/bootstrap.min.css"
 
+console.log("js loaded");
+
+
 let ws
 let userId
 let userName
@@ -19,7 +22,8 @@ let myBalance
 
 const connect = () => {
   ws = new WebSocket("https://websocketpokerserver-660005682738.europe-west1.run.app")
-
+    console.log("ws connecting!");
+    
   ws.onopen = () => {
     userName = document.querySelector("#name").value
 
